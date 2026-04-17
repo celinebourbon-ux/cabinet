@@ -369,12 +369,12 @@ let SQ='',FST='all',FM='all';
 // AUTH
 function doAuth(){
   const v=document.getElementById('ap').value;
-  if(v===PWD){sessionStorage.setItem('c3','1');document.getElementById('auth').style.display='none';document.getElementById('app').classList.add('on');boot();}
+  if(v===PWD){sessionStorage.setItem('cab','1');document.getElementById('auth').style.display='none';document.getElementById('app').classList.add('on');boot();}
   else{document.getElementById('ae').textContent='Mot de passe incorrect';document.getElementById('ap').value='';document.getElementById('ap').focus();}
 }
 document.getElementById('ap').addEventListener('keydown',e=>{if(e.key==='Enter')doAuth()});
-function doLogout(){sessionStorage.removeItem('c3');location.reload()}
-if(sessionStorage.getItem('c3')==='1'){document.getElementById('auth').style.display='none';document.getElementById('app').classList.add('on');boot();}
+function doLogout(){sessionStorage.removeItem('cab');location.reload()}
+if(sessionStorage.getItem('cab')==='1'){document.getElementById('auth').style.display='none';document.getElementById('app').classList.add('on');boot();}
 
 // API
 async function api(action,body,method,retries){

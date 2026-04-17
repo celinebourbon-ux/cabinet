@@ -352,194 +352,141 @@ async function loadPatient(){
 }
 
 function render(){
-  const p = PATIENT;
-  const mc = MC[p.masque] || 'var(--gold)';
-  const ml = MLBL[p.masque] || '—';
-  const sessions_bilans = SESSIONS.filter(s=>s.scores);
-  const initial = SESSIONS.find(s=>s.type==='initial'&&s.scores);
-  const final_  = SESSIONS.find(s=>s.type==='final'&&s.scores);
-  const done_count = PROGRESS.filter(pr=>pr.completed).length;
-  const pct = Math.round(done_count/STEPS_DEF.length*100);
-  document.title = `${p.initiales} — Cabinet V.A.L.E.U.R©`;
-  const bc = document.getElementById('_bc');
+  if(!PATIENT) return;
+  var p = PATIENT;
+  var mc = MC[p.masque] || '#A8873A';
+  var ml = MLBL[p.masque] || '—';
+  var sessions_bilans = SESSIONS.filter(function(s){return s.scores;});
+  var initial = SESSIONS.find(function(s){return s.type==='initial'&&s.scores;});
+  var final_ = SESSIONS.find(function(s){return s.type==='final'&&s.scores;});
+  var done_count = PROGRESS.filter(function(pr){return pr.completed;}).length;
+  var pct = STEPS_DEF.length ? Math.round(done_count/STEPS_DEF.length*100) : 0;
+  document.title = p.initiales+' — Cabinet';
+  var bc = document.getElementById('_bc');
   if(bc) bc.textContent = p.initiales;
 
-  // ── HEADER COMPACT ──────────────────────────────────────────
-  const header = `
-    <div style="background:${mc}0D;border-bottom:2px solid ${mc}30;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:16px">
-        <div style="width:44px;height:44px;border-radius:50%;background:${mc}22;border:1.5px solid ${mc}40;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;color:${mc};flex-shrink:0">${p.initiales.charAt(0)}</div>
-        <div>
-          <div style="font-family:var(--serif);font-size:20px;font-weight:300;color:var(--ink)">${p.initiales}${p.nom_complet?` <span style="font-size:13px;font-weight:300;color:var(--ink3)">· ${p.nom_complet}</span>`:''}</div>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:3px;flex-wrap:wrap">
-            ${p.masque?`<span style="display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;background:${mc}18;color:${mc};border:1px solid ${mc}30"><span style="width:6px;height:6px;border-radius:50%;background:${mc}"></span>Masque ${ml}</span>`:`<span style="font-size:11px;color:var(--ink3);font-style:italic">Bilan initial à réaliser</span>`}
-            ${p.age?`<span style="font-size:11px;color:var(--ink3)">${p.age} ans</span>`:''}
-            ${p.statut&&p.statut!=='actif'?`<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:rgba(184,147,10,.1);color:#B8930A">${p.statut}</span>`:''}
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <div style="text-align:center;padding:0 14px;border-right:1px solid var(--line)"><div style="font-family:var(--serif);font-size:20px;font-weight:300;color:${pct>=80?'#2D7A4F':pct>=40?'#B8930A':'var(--ink)'}">${pct}%</div><div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-top:1px">Parcours</div></div>
-        ${initial?`<div style="text-align:center;padding:0 14px;border-right:1px solid var(--line)"><div style="font-family:var(--serif);font-size:20px;font-weight:300;color:${initial.spa>=55?'#2D7A4F':initial.spa>=35?'#B8930A':'#B5312A'}">${initial.spa}%</div><div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-top:1px">SPA init.</div></div>`:``}
-        ${final_?`<div style="text-align:center;padding:0 14px"><div style="font-family:var(--serif);font-size:20px;font-weight:300;color:${final_.spa>=55?'#2D7A4F':final_.spa>=35?'#B8930A':'#B5312A'}">${final_.spa}%</div><div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-top:1px">SPA final</div></div>`:``}
-      </div>
-    </div>`;
+  var H = '';
+  // HEADER
+  H += '<div style="background:'+mc+'18;border-bottom:2px solid '+mc+'35;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">';
+  H += '<div style="display:flex;align-items:center;gap:13px">';
+  H += '<div style="width:40px;height:40px;border-radius:50%;background:'+mc+'25;border:1.5px solid '+mc+'45;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;color:'+mc+'">'+p.initiales.charAt(0)+'</div>';
+  H += '<div><div style="font-family:var(--serif);font-size:18px;font-weight:300;color:var(--ink)">'+p.initiales+'</div>';
+  H += '<div style="display:flex;align-items:center;gap:8px;margin-top:3px">';
+  H += p.masque ? '<span style="display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;background:'+mc+'18;color:'+mc+';border:1px solid '+mc+'30"><span style="width:6px;height:6px;border-radius:50%;background:'+mc+'"></span>Masque '+ml+'</span>' : '<span style="font-size:11px;color:var(--ink3);font-style:italic">Bilan initial à réaliser</span>';
+  H += p.age ? '<span style="font-size:11px;color:var(--ink3)">'+p.age+' ans</span>' : '';
+  H += '</div></div></div>';
+  H += '<div style="display:flex;gap:12px;align-items:center">';
+  H += '<div style="text-align:center;padding:0 11px;border-right:1px solid var(--line)"><div style="font-family:var(--serif);font-size:18px;font-weight:300;color:'+mc+'">'+pct+'%</div><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3)">Parcours</div></div>';
+  if(initial) H += '<div style="text-align:center;padding:0 11px;'+(final_?'border-right:1px solid var(--line);':'')+'"><div style="font-family:var(--serif);font-size:18px;font-weight:300;color:'+(initial.spa>=55?'#2D7A4F':initial.spa>=35?'#B8930A':'#B5312A')+'">'+initial.spa+'%</div><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3)">SPA init.</div></div>';
+  if(final_) H += '<div style="text-align:center;padding:0 11px"><div style="font-family:var(--serif);font-size:18px;font-weight:300;color:'+(final_.spa>=55?'#2D7A4F':final_.spa>=35?'#B8930A':'#B5312A')+'">'+final_.spa+'%</div><div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3)">SPA final</div></div>';
+  H += '</div></div>';
 
-  // ── BARRE D'ONGLETS ──────────────────────────────────────────
-  const tabs = `
-    <div style="display:flex;gap:0;border-bottom:1px solid var(--line);background:var(--f);padding:0 24px;position:sticky;top:0;z-index:50" id="pt-tabs">
-      ${[
-        {id:'tab-apercu',   label:'Aperçu',    ico:'◎'},
-        {id:'tab-parcours', label:'Parcours',  ico:'🗺'},
-        {id:'tab-bilans',   label:'Bilans',    ico:'📊'},
-        {id:'tab-livrets',  label:'Livrets',   ico:'📖'},
-      ].map((t,i)=>`<button id="${t.id}" onclick="switchTab('${t.id}')" style="padding:11px 16px;border:none;background:transparent;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--sans);font-size:11px;font-weight:500;color:var(--ink3);display:flex;align-items:center;gap:6px;transition:all .14s;white-space:nowrap">${t.ico} ${t.label}</button>`).join('')}
-    </div>`;
+  // TABS — data-tab évite les quotes imbriquées dans onclick
+  H += '<div style="display:flex;border-bottom:1px solid var(--line);background:var(--f);padding:0 22px;position:sticky;top:0;z-index:50" id="pt-tabs">';
+  var TABS = [['tab-apercu','Aperçu'],['tab-parcours','Parcours'],['tab-bilans','Bilans'],['tab-livrets','Livrets']];
+  for(var ti=0;ti<TABS.length;ti++){
+    H += '<button data-tab="'+TABS[ti][0]+'" class="pt-tab" style="padding:10px 14px;border:none;background:transparent;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--sans);font-size:11px;font-weight:500;color:var(--ink3);transition:all .14s">'+TABS[ti][1]+'</button>';
+  }
+  H += '</div>';
 
-  // ── ONGLET 1 : APERÇU ────────────────────────────────────────
-  const tabApercu = `
-    <div id="panel-apercu" class="tab-panel" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:20px 24px">
+  // APERCU
+  H += '<div id="panel-apercu" class="tab-panel" style="display:none"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px 22px">';
+  H += '<div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap">';
+  H += '<button class="btn btn-gold btn-sm" onclick="sendQLink('+p.id+')">Envoyer le questionnaire</button>';
+  H += '<button class="btn btn-dark btn-sm" onclick="newBilan()">+ Bilan praticien</button>';
+  H += '<button class="btn btn-ghost btn-sm" onclick="openScoreModal()">Saisie papier</button>';
+  H += '<a class="btn btn-ghost btn-sm" href="suivi_masque.html?patient_id='+p.id+'">Suivi de séance</a>';
+  H += '<a class="btn btn-ghost btn-sm" href="suivi_parcours.html?patient_id='+p.id+'">Parcours complet</a>';
+  H += initial ? '<a class="btn btn-ghost btn-sm" href="resultats_cabinet.html?scores='+encodeURIComponent(JSON.stringify(initial.scores))+'&patient_id='+p.id+'&session_id='+initial.id+'&cabinet=1" target="_blank">Voir portrait</a>' : '';
+  H += '<button class="btn btn-sm" style="background:rgba(181,49,42,.07);color:#B5312A;border:1px solid rgba(181,49,42,.15)" onclick="deletePatient('+p.id+',\''+p.initiales.replace(/'/g,"\\'")+ '\')">Supprimer</button>';
+  H += '</div>';
+  // Coordonnées
+  H += '<div style="background:var(--f);border:1px solid var(--line);border-radius:3px;padding:15px 17px">';
+  H += '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:11px">Coordonnées</div>';
+  if(p.telephone) H += '<div style="display:flex;gap:8px;margin-bottom:6px"><span style="font-size:11px;color:var(--ink3);min-width:110px">Téléphone</span><span style="font-size:12px">'+p.telephone+'</span></div>';
+  if(p.email) H += '<div style="display:flex;gap:8px;margin-bottom:6px"><span style="font-size:11px;color:var(--ink3);min-width:110px">Email</span><span style="font-size:12px">'+p.email+'</span></div>';
+  if(p.date_naissance) H += '<div style="display:flex;gap:8px;margin-bottom:6px"><span style="font-size:11px;color:var(--ink3);min-width:110px">Naissance</span><span style="font-size:12px">'+new Date(p.date_naissance).toLocaleDateString('fr-FR')+'</span></div>';
+  if(!p.telephone&&!p.email&&!p.date_naissance) H += '<span style="font-size:11px;color:var(--ink3);font-style:italic">Aucune coordonnée renseignée</span>';
+  H += '</div>';
+  // Notes
+  H += '<div style="background:var(--f);border:1px solid var(--line);border-radius:3px;padding:15px 17px">';
+  H += '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:11px">Notes praticien</div>';
+  H += '<textarea id="global-notes" placeholder="Notes cliniques, observations..." rows="5" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:2px;background:var(--f2);font-family:var(--sans);font-size:12px;color:var(--ink);outline:none;resize:vertical">'+(p.notes||'')+'</textarea>';
+  H += '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="saveGlobalNotes()">Enregistrer</button>';
+  H += '</div></div></div>';
 
-        <!-- Actions rapides -->
-        <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;padding-bottom:4px">
-          <button class="btn btn-gold btn-sm" onclick="sendQLink(${p.id})">📤 Envoyer le questionnaire</button>
-          <button class="btn btn-dark btn-sm" onclick="newBilan()">📝 Nouveau bilan praticien</button>
-          <button class="btn btn-ghost btn-sm" onclick="openScoreModal()">🔢 Saisie papier</button>
-          <a class="btn btn-ghost btn-sm" href="suivi_masque.html?patient_id=${p.id}">🌊 Suivi de séance</a>
-          <a class="btn btn-ghost btn-sm" href="suivi_parcours.html?patient_id=${p.id}">🗺 Parcours complet</a>
-          ${initial?`<a class="btn btn-ghost btn-sm" href="resultats_cabinet.html?scores=${encodeURIComponent(JSON.stringify(initial.scores))}&patient_id=${p.id}&session_id=${initial.id}&cabinet=1" target="_blank">🎭 Portrait masque</a>`:''}
-          <button class="btn btn-sm" style="background:rgba(181,49,42,.07);color:#B5312A;border:1px solid rgba(181,49,42,.15)" onclick="deletePatient(${p.id},'${p.initiales}')">Supprimer</button>
-        </div>
+  // PARCOURS
+  H += '<div id="panel-parcours" class="tab-panel" style="display:none"><div style="padding:18px 22px">';
+  H += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
+  H += '<div><div style="font-family:var(--serif);font-size:17px;font-weight:300">Parcours V.A.L.E.U.R de '+p.initiales+'</div>';
+  H += '<div style="font-size:11px;color:var(--ink3);margin-top:2px">'+done_count+' étape'+(done_count>1?'s':'')+' sur '+STEPS_DEF.length+' — '+pct+'%</div></div>';
+  H += '<a class="btn btn-dark btn-sm" href="suivi_parcours.html?patient_id='+p.id+'">Parcours détaillé →</a></div>';
+  H += '<div style="background:var(--line);border-radius:2px;height:4px;margin-bottom:18px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+mc+';border-radius:2px"></div></div>';
+  H += '<div id="timeline">'+STEPS_DEF.map(function(step,i){return renderStep(step,i,mc);}).join('')+'</div>';
+  H += '</div></div>';
 
-        <!-- Infos patient -->
-        <div style="background:var(--f);border:1px solid var(--line);border-radius:3px;padding:16px 18px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">Coordonnées</div>
-          ${[
-            {l:'Téléphone', v:p.telephone},
-            {l:'Email', v:p.email},
-            {l:'Date de naissance', v:p.date_naissance?new Date(p.date_naissance).toLocaleDateString('fr-FR'):null},
-            {l:'Suivi depuis', v:p.date_debut?new Date(p.date_debut).toLocaleDateString('fr-FR'):null},
-            {l:'Tags', v:(p.tags&&p.tags.length)?p.tags.join(', '):null},
-          ].map(r=>r.v?`<div style="display:flex;gap:8px;margin-bottom:7px"><span style="font-size:11px;color:var(--ink3);min-width:120px">${r.l}</span><span style="font-size:12px;color:var(--ink)">${r.v}</span></div>`:``).join('')}
-          ${!p.telephone&&!p.email&&!p.date_naissance?`<div style="font-size:11px;color:var(--ink3);font-style:italic">Aucune coordonnée renseignée</div>`:''}
-        </div>
+  // BILANS
+  H += '<div id="panel-bilans" class="tab-panel" style="display:none"><div style="padding:18px 22px">';
+  H += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">';
+  H += '<div style="font-family:var(--serif);font-size:17px;font-weight:300">Historique des bilans</div>';
+  H += '<div style="display:flex;gap:8px"><button class="btn btn-gold btn-sm" onclick="newBilan()">+ Nouveau bilan</button><button class="btn btn-ghost btn-sm" onclick="openScoreModal()">Saisie papier</button></div></div>';
+  if(sessions_bilans.length===0){
+    H += '<div style="text-align:center;padding:48px;background:var(--f);border:1px solid var(--line);border-radius:3px">';
+    H += '<div style="font-size:26px;opacity:.2;margin-bottom:12px">📊</div>';
+    H += '<div style="font-family:var(--serif);font-size:16px;font-weight:300;margin-bottom:6px">Aucun bilan réalisé</div>';
+    H += '<div style="font-size:11px;color:var(--ink3);margin-bottom:16px">Envoyez le questionnaire au patient ou saisissez les scores manuellement.</div>';
+    H += '<div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-gold btn-sm" onclick="sendQLink('+p.id+')">Envoyer le questionnaire</button><button class="btn btn-ghost btn-sm" onclick="openScoreModal()">Saisie papier</button></div></div>';
+  } else {
+    for(var bi=0;bi<sessions_bilans.length;bi++){
+      var s=sessions_bilans[bi];
+      var dom=s.masque_dominant||'—';
+      var col=MC[dom]||'#A8873A';
+      var spaC=s.spa>=55?'#2D7A4F':s.spa>=35?'#B8930A':'#B5312A';
+      var dStr=new Date(s.date_passation||s.created_at).toLocaleDateString('fr-FR');
+      H += '<div style="background:var(--f);border:1px solid var(--line);border-radius:3px;margin-bottom:10px">';
+      H += '<div style="padding:13px 17px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px">';
+      H += '<div><div style="font-size:12px;font-weight:600">'+(s.type==='final'?'Bilan final':'Bilan initial')+' · '+dStr+'</div>';
+      H += '<div style="display:flex;align-items:center;gap:9px;margin-top:4px">';
+      H += '<span style="display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;background:'+col+'18;color:'+col+';border:1px solid '+col+'30">Masque '+(MLBL[dom]||dom)+'</span>';
+      H += '<span style="font-family:var(--serif);font-size:14px;font-weight:300;color:'+spaC+'">SPA '+s.spa+'%</span>';
+      H += '</div></div>';
+      if(s.scores) H += '<a class="btn btn-ghost btn-sm" href="resultats_cabinet.html?scores='+encodeURIComponent(JSON.stringify(s.scores))+'&patient_id='+p.id+'&session_id='+s.id+'&cabinet=1" target="_blank">Voir portrait →</a>';
+      H += '</div>';
+      if(s.scores){
+        H += '<div style="padding:10px 17px;display:flex;gap:6px;flex-wrap:wrap">';
+        var ents=Object.entries(s.scores);
+        for(var si=0;si<ents.length;si++){
+          var mk=ents[si][0];var sc=ents[si][1];
+          H += '<div style="text-align:center;padding:5px 9px;background:'+(MC[mk]||'#888')+'0D;border-radius:2px;min-width:48px"><div style="font-family:var(--serif);font-size:15px;font-weight:300;color:'+(MC[mk]||'#888')+'">'+sc+'%</div><div style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+(MC[mk]||'#888')+'">'+(MLBL[mk]||mk)+'</div></div>';
+        }
+        H += '</div>';
+      }
+      H += '</div>';
+    }
+    if(final_&&initial){
+      H += '<div style="background:rgba(45,122,79,.06);border:1px solid rgba(45,122,79,.2);border-radius:3px;padding:15px 17px;margin-top:6px">';
+      H += '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2D7A4F;margin-bottom:6px">Évolution SPA</div>';
+      H += '<div style="font-family:var(--serif);font-size:20px;font-weight:300;color:'+(final_.spa>initial.spa?'#2D7A4F':'#B5312A')+'">'+initial.spa+'% → '+final_.spa+'% · '+(final_.spa>initial.spa?'+':'')+(final_.spa-initial.spa)+' pts</div>';
+      H += '</div>';
+    }
+  }
+  H += '</div></div>';
 
-        <!-- Notes praticien -->
-        <div style="background:var(--f);border:1px solid var(--line);border-radius:3px;padding:16px 18px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">Notes praticien (confidentielles)</div>
-          <textarea class="global-notes" id="global-notes" placeholder="Notes cliniques, observations de suivi, contexte..." rows="5" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:2px;background:var(--f2);font-family:var(--sans);font-size:12px;color:var(--ink);outline:none;resize:vertical">${p.notes||''}</textarea>
-          <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="saveGlobalNotes()">Enregistrer</button>
-        </div>
+  // LIVRETS
+  H += '<div id="panel-livrets" class="tab-panel" style="display:none"><div style="padding:18px 22px">';
+  H += '<div style="font-family:var(--serif);font-size:17px;font-weight:300;margin-bottom:14px">Accès Livrets de '+p.initiales+'</div>';
+  H += renderLivretAccess(p, LIVRET_ACCESS);
+  H += '</div></div>';
 
-      </div>
-    </div>`;
+  document.getElementById('content').innerHTML = H;
 
-  // ── ONGLET 2 : PARCOURS ───────────────────────────────────────
-  const tabParcours = `
-    <div id="panel-parcours" class="tab-panel" style="display:none">
-      <div style="padding:20px 24px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div>
-            <div style="font-family:var(--serif);font-size:18px;font-weight:300;color:var(--ink)">Parcours V.A.L.E.U.R© de ${p.initiales}</div>
-            <div style="font-size:11px;color:var(--ink3);margin-top:2px">${done_count} étape${done_count>1?'s':''} sur ${STEPS_DEF.length} complétées · ${pct}%</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <a class="btn btn-dark btn-sm" href="suivi_parcours.html?patient_id=${p.id}">Parcours détaillé →</a>
-          </div>
-        </div>
-        <div style="background:var(--line);border-radius:2px;height:4px;margin-bottom:20px;overflow:hidden">
-          <div style="height:100%;width:${pct}%;background:${mc};border-radius:2px;transition:width .4s ease"></div>
-        </div>
-        <div id="timeline" style="display:flex;flex-direction:column;gap:1px">
-          ${STEPS_DEF.map((step,i)=>renderStep(step,i,mc)).join('')}
-        </div>
-      </div>
-    </div>`;
+  // Attacher les événements des tabs APRES injection dans le DOM
+  document.querySelectorAll('.pt-tab').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(this.getAttribute('data-tab')); });
+  });
 
-  // ── ONGLET 3 : BILANS ─────────────────────────────────────────
-  const tabBilans = `
-    <div id="panel-bilans" class="tab-panel" style="display:none">
-      <div style="padding:20px 24px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-          <div style="font-family:var(--serif);font-size:18px;font-weight:300;color:var(--ink)">Historique des bilans</div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-gold btn-sm" onclick="newBilan()">+ Nouveau bilan</button>
-            <button class="btn btn-ghost btn-sm" onclick="openScoreModal()">Saisie papier</button>
-          </div>
-        </div>
-
-        ${sessions_bilans.length===0?`
-          <div style="text-align:center;padding:48px 20px;background:var(--f);border:1px solid var(--line);border-radius:3px">
-            <div style="font-size:28px;opacity:.2;margin-bottom:12px">📊</div>
-            <div style="font-family:var(--serif);font-size:17px;font-weight:300;color:var(--ink);margin-bottom:6px">Aucun bilan réalisé</div>
-            <div style="font-size:11px;color:var(--ink3);margin-bottom:18px">Envoyez le questionnaire au patient ou saisissez les scores manuellement.</div>
-            <div style="display:flex;gap:8px;justify-content:center">
-              <button class="btn btn-gold btn-sm" onclick="sendQLink(${p.id})">Envoyer le questionnaire</button>
-              <button class="btn btn-ghost btn-sm" onclick="openScoreModal()">Saisie papier</button>
-            </div>
-          </div>`:
-          `<div style="display:flex;flex-direction:column;gap:10px">
-            ${sessions_bilans.map(s=>{
-              const dom = s.masque_dominant||'—';
-              const col = MC[dom]||'var(--gold)';
-              const spa_col = s.spa>=55?'#2D7A4F':s.spa>=35?'#B8930A':'#B5312A';
-              const dateStr = new Date(s.date_passation||s.created_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
-              return `<div style="background:var(--f);border:1px solid var(--line);border-radius:3px;overflow:hidden">
-                <div style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px">
-                  <div>
-                    <div style="font-size:12px;font-weight:600;color:var(--ink)">${s.type==='final'?'Bilan final':'Bilan initial'} · ${dateStr}</div>
-                    <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
-                      <span style="display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;background:${col}18;color:${col};border:1px solid ${col}30">Masque ${MLBL[dom]||dom}</span>
-                      <span style="font-size:12px;font-weight:300;font-family:var(--serif);color:${spa_col}">SPA ${s.spa}%</span>
-                    </div>
-                  </div>
-                  ${s.scores?`<a class="btn btn-ghost btn-sm" href="resultats_cabinet.html?scores=${encodeURIComponent(JSON.stringify(s.scores))}&patient_id=${p.id}&session_id=${s.id}&cabinet=1" target="_blank">Voir le portrait →</a>`:``}
-                </div>
-                ${s.scores?`<div style="padding:12px 18px;display:flex;gap:6px;flex-wrap:wrap">
-                  ${Object.entries(s.scores).map(([mask,score])=>`
-                    <div style="text-align:center;padding:6px 10px;background:${MC[mask]||'#888'}0D;border-radius:2px;min-width:52px">
-                      <div style="font-family:var(--serif);font-size:16px;font-weight:300;color:${MC[mask]||'#888'}">${score}%</div>
-                      <div style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${MC[mask]||'#888'}">${MLBL[mask]||mask}</div>
-                    </div>`).join('')}
-                </div>`:``}
-                ${s.notes_bilan?`<div style="padding:10px 18px;font-size:12px;color:var(--ink2);background:rgba(168,135,58,.04);border-top:1px solid var(--line);font-style:italic">${s.notes_bilan}</div>`:''}
-              </div>`;
-            }).join('')}
-          </div>`}
-
-        ${final_&&initial?`
-          <div style="background:rgba(45,122,79,.06);border:1px solid rgba(45,122,79,.2);border-radius:3px;padding:16px 18px;margin-top:14px">
-            <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2D7A4F;margin-bottom:8px">Évolution SPA</div>
-            <div style="font-family:var(--serif);font-size:22px;font-weight:300;color:${final_.spa>initial.spa?'#2D7A4F':'#B5312A'}">
-              ${initial.spa}% → ${final_.spa}% · ${final_.spa>initial.spa?'+':''}${final_.spa-initial.spa} points
-            </div>
-            <div style="font-size:11px;color:#2D7A4F;margin-top:4px;font-style:italic">
-              ${final_.spa>initial.spa?'Progression significative — Travail thérapeutique accompli':'Travail en cours — Continuer le parcours'}
-            </div>
-          </div>`:``}
-      </div>
-    </div>`;
-
-  // ── ONGLET 4 : LIVRETS ────────────────────────────────────────
-  const tabLivrets = `
-    <div id="panel-livrets" class="tab-panel" style="display:none">
-      <div style="padding:20px 24px" id="livrets-content">
-        <div style="font-family:var(--serif);font-size:18px;font-weight:300;color:var(--ink);margin-bottom:16px">Accès aux livrets de ${p.initiales}</div>
-        ${renderLivretAccess(p, LIVRET_ACCESS)}
-      </div>
-    </div>`;
-
-  // ── ASSEMBLAGE ────────────────────────────────────────────────
-  document.getElementById('content').innerHTML = header + tabs + tabApercu + tabParcours + tabBilans + tabLivrets;
-
-  // Activer le bon onglet (mémorisation)
-  const saved = sessionStorage.getItem('pt_tab_'+PATIENT_ID) || 'tab-apercu';
+  var saved = sessionStorage.getItem('pt_tab_'+PATIENT_ID) || 'tab-apercu';
   switchTab(saved);
-
-  // Init notes
-  const gnEl = document.getElementById('global-notes');
-  if(gnEl) gnEl.addEventListener('keydown', e=>{ if(e.key==='Enter'&&e.ctrlKey) saveGlobalNotes(); });
 }
 
 function switchTab(tabId){
