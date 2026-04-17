@@ -482,7 +482,7 @@ dashboard:function(){
     '<div class="qa-g">'+
       '<div class="qa" onclick="openPt()"><div class="qa-i">👤</div><div class="qa-l">Nouveau patient</div></div>'+
       '<div class="qa" onclick="openRdv()"><div class="qa-i">📅</div><div class="qa-l">Rendez-vous</div></div>'+
-      '<a class="qa" href="questionnaire.html" target="_blank"><div class="qa-i">📝</div><div class="qa-l">Questionnaire</div></a>'+
+      '<a class="qa" href="questionnaire_patient.html" target="_blank"><div class="qa-i">📝</div><div class="qa-l">Questionnaire</div></a>'+
       '<div class="qa" onclick="nav(\'outils\')"><div class="qa-i">🎭</div><div class="qa-l">Outils</div></div>'+
       '<div class="qa" onclick="nav(\'documents\')"><div class="qa-i">📁</div><div class="qa-l">Documents</div></div>'+
     '</div>'+
@@ -520,6 +520,23 @@ dashboard:function(){
         '</div>'+
       '</div>'+
     '</div>'+
+    '<div class="card" style="margin-top:14px">'+
+    '<div class="ch"><span class="ct">Sequence patient — 3 etapes</span></div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)">'+
+    '<div style="padding:16px 18px;border-right:1px solid var(--line)">'+
+    '<div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(168,135,58,.8);margin-bottom:10px">1. Questionnaire</div>'+
+    '<div style="font-size:11px;color:var(--ink2);line-height:1.7;margin-bottom:10px">Fiche patient - Envoyer le questionnaire - copier le lien - envoyer au patient</div>'+
+    '<div style="padding:6px 10px;background:var(--f2);border-radius:2px;font-size:10px;color:var(--ink3);font-family:monospace">questionnaire_patient.html?token=...</div></div>'+
+    '<div style="padding:16px 18px;border-right:1px solid var(--line)">'+
+    '<div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(45,122,79,.8);margin-bottom:10px">2. Portrait</div>'+
+    '<div style="font-size:11px;color:var(--ink2);line-height:1.7;margin-bottom:10px">Fiche patient - onglet Bilans - Voir le portrait - Ctrl+P - PDF - envoyer</div>'+
+    '<div style="padding:6px 10px;background:var(--f2);border-radius:2px;font-size:10px;color:var(--ink3)">Format A4 - Complet - Non copiable</div></div>'+
+    '<div style="padding:16px 18px">'+
+    '<div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(29,95,138,.8);margin-bottom:10px">3. Livrets</div>'+
+    '<div style="font-size:11px;color:var(--ink2);line-height:1.7;margin-bottom:10px">Fiche patient - onglet Livrets - Donner acces - copier le lien - envoyer</div>'+
+    '<div style="padding:6px 10px;background:var(--f2);border-radius:2px;font-size:10px;color:var(--ink3)">Psychoeducation - Masque - Defis 21j</div></div>'+
+    '</div></div>'+
+
   '</div>');
 },
 
@@ -619,12 +636,12 @@ agenda:function(){
 
 outils:function(){
   var tools=[
-    {i:'📋',n:'Questionnaire V.A.L.E.U.R©',d:'112 questions · Masques · SPA',tag:'Bilan',tc:MC.bleu,fn:"window.open('questionnaire.html','_blank')"},
+    {i:'📋',n:'Questionnaire V.A.L.E.U.R©',d:'112 questions · Masques · SPA',tag:'Bilan',tc:MC.bleu,fn:"window.open('questionnaire_patient.html','_blank')"},
     {i:'🎭',n:'Portrait Masque',d:'Rapport · Dyades · Ressources',tag:'Analyse',tc:MC.indigo,fn:"window.open('resultats_cabinet.html','_blank')"},
     {i:'🌊',n:'Suivi de séance',d:'Manifestations · Intensité · Évolution',tag:'Séance',tc:MC.vert,fn:"goTool('suivi_masque')"},
     {i:'🗺',n:'Parcours V.A.L.E.U.R©',d:'6 étapes · Psychoéducation · Défis',tag:'Parcours',tc:MC.orange,fn:"goTool('suivi_parcours')"},
     {i:'🧭',n:'Suivi par étape',d:'Thermomètres · Indicateurs · Notes',tag:'Étapes',tc:MC.jaune,fn:"goTool('suivi_valeur')"},
-    {i:'📖',n:'Livret Psychoéducation',d:'Biologie · SNA · Cohérence cardiaque',tag:'Livret',tc:MC.rouge,fn:"window.open('https://parcours.valeur.psyh.fr/livret_psychoeducation.html','_blank')"},
+    {i:'📖',n:'Livret Psychoéducation',d:'Biologie · SNA · Cohérence cardiaque',tag:'Livret',tc:MC.rouge,fn:"window.open('livret.html?type=psychoeducation','_blank')"},
     {i:'📗',n:'Livrets Masques (×7)',d:'Workbooks personnalisés par masque',tag:'Livret',tc:MC.vert,fn:"toast('Ouvrez un dossier patient pour accéder à ses livrets')"},
     {i:'⚡',n:'Protocole Éclair',d:'6 étapes · 7 minutes · Urgences',tag:'Outil rapide',tc:MC.gold||'#A8873A',fn:"toast('Disponible depuis la fiche patient')"},
     {i:'🔢',n:'Saisie de scores papier',d:'Scores questionnaire papier → portrait',tag:'Bilan',tc:MC.bleu,fn:"toast('Cliquez Saisie papier depuis une fiche patient')"},
@@ -850,6 +867,78 @@ function closeM(id){document.getElementById(id)&&document.getElementById(id).cla
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.ov.on').forEach(function(m){m.classList.remove('on')})});
 
 // TOAST
+function showGuide(){
+  var existing=document.getElementById('guide-modal');
+  if(existing){existing.remove();return;}
+  var box=document.createElement('div');
+  box.id='guide-modal';
+  box.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(20,16,13,.7);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  var steps=[
+    {n:"1",c:"#A8873A",t:"Creer le dossier",d:"Dashboard &rarr; + Nouveau patient &rarr; initiales, coordonnees, notes initiales"},
+    {n:"2",c:"#2D7A4F",t:"Questionnaire",d:"Fiche patient &rarr; <b>Envoyer le questionnaire</b> &rarr; copier le lien &rarr; email ou SMS au patient"},
+    {n:"3",c:"#1D5F8A",t:"Portrait masque",d:"Fiche patient &rarr; onglet <b>Bilans</b> &rarr; <b>Voir le portrait</b> &rarr; Ctrl+P &rarr; PDF &rarr; envoyer"},
+    {n:"4",c:"#5C3280",t:"Livrets",d:"Fiche patient &rarr; onglet <b>Livrets</b> &rarr; <b>Donner acces</b> &rarr; copier le lien &rarr; email ou SMS"},
+  ];
+  var stepsHtml=steps.map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:#fff;border:1px solid rgba(26,23,20,.08);border-radius:3px;margin-bottom:7px">'+
+      '<div style="width:22px;height:22px;border-radius:50%;background:'+s.c+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px">'+s.n+'</div>'+
+      '<div><div style="font-size:12px;font-weight:600;color:#1A1714;margin-bottom:2px">'+s.t+'</div><div style="font-size:11px;color:rgba(26,23,20,.5);line-height:1.6">'+s.d+'</div></div></div>';
+  }).join('');
+  box.innerHTML=
+    '<div style="background:#F5F1EB;border-radius:4px;width:min(680px,96vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">'+
+    '<div style="padding:18px 22px;border-bottom:1px solid rgba(26,23,20,.08);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#F5F1EB;z-index:2">'+
+      '<div style="font-size:16px;font-weight:600;color:#1A1714">Mode d emploi &mdash; Cabinet V.A.L.E.U.R&#169;</div>'+
+      '<button id="guide-close" style="width:28px;height:28px;border:none;background:#EDE8DF;border-radius:50%;cursor:pointer;font-size:15px;color:rgba(26,23,20,.5)">&#215;</button>'+
+    '</div>'+
+    '<div style="padding:18px 22px;display:flex;flex-direction:column;gap:16px">'+
+      '<div style="background:#14100D;border-radius:3px;padding:16px 18px">'+
+        '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(168,135,58,.7);margin-bottom:10px">Acces &amp; Identifiants</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+          '<div style="padding:10px 14px;background:rgba(255,255,255,.04);border-radius:2px"><div style="font-size:9px;color:rgba(245,241,235,.35);margin-bottom:3px">URL Cabinet</div><div style="font-size:11px;color:rgba(245,241,235,.85);font-family:monospace">cabinet.psyh.fr</div></div>'+
+          '<div style="padding:10px 14px;background:rgba(255,255,255,.04);border-radius:2px"><div style="font-size:9px;color:rgba(245,241,235,.35);margin-bottom:3px">Mot de passe</div><div style="font-size:11px;color:rgba(168,135,58,.9);font-family:monospace">ValeurCabinet2026</div></div>'+
+          '<div style="padding:10px 14px;background:rgba(255,255,255,.04);border-radius:2px"><div style="font-size:9px;color:rgba(245,241,235,.35);margin-bottom:3px">Portrait sans email</div><div style="font-size:11px;color:rgba(245,241,235,.6);font-family:monospace">?admin=VALEUR-ADMIN-2025</div></div>'+
+          '<div style="padding:10px 14px;background:rgba(255,255,255,.04);border-radius:2px"><div style="font-size:9px;color:rgba(245,241,235,.35);margin-bottom:3px">Questionnaire cabinet</div><div style="font-size:11px;color:rgba(245,241,235,.6);font-family:monospace">questionnaire_patient.html</div></div>'+
+        '</div>'+
+      '</div>'+
+      '<div><div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(26,23,20,.4);margin-bottom:10px">Flux patient complet</div>'+stepsHtml+'</div>'+
+      '<div style="background:rgba(168,135,58,.06);border:1px solid rgba(168,135,58,.2);border-radius:3px;padding:14px 16px">'+
+        '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(168,135,58,.8);margin-bottom:10px">Gestion des livrets</div>'+
+        '<div style="font-size:11px;color:rgba(26,23,20,.65);line-height:1.85">'+
+          '&#8226; Ouvrir fiche patient &rarr; onglet Livrets &rarr; Donner acces<br>'+
+          '&#8226; Choisir : Psychoeducation / Masque dominant / Defis 21 jours<br>'+
+          '&#8226; Lien copie automatiquement &rarr; coller dans email ou SMS<br>'+
+          '&#8226; Patient lit, remplit, sauvegarde automatiquement<br>'+
+          '&#8226; Progression visible depuis onglet Livrets de la fiche patient<br>'+
+          '&#8226; Revoquer a tout moment avec le bouton Revoquer'+
+        '</div>'+
+      '</div>'+
+      '<div style="background:rgba(45,122,79,.06);border:1px solid rgba(45,122,79,.2);border-radius:3px;padding:14px 16px">'+
+        '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(45,122,79,.8);margin-bottom:10px">Securite livrets</div>'+
+        '<div style="font-size:11px;color:rgba(26,23,20,.65);line-height:1.85">'+
+          '&#8226; Token unique 24 caracteres &mdash; non devinable &mdash; non indexe<br>'+
+          '&#8226; Impression bloquee (CSS+JS) &mdash; Copie bloquee &mdash; Clic droit desactive<br>'+
+          '&#8226; Filigrane initiales + date du jour sur chaque page<br>'+
+          '&#8226; Sauvegarde auto toutes les 30s &mdash; reprise depuis la derniere page'+
+        '</div>'+
+      '</div>'+
+      '<div style="background:rgba(29,95,138,.06);border:1px solid rgba(29,95,138,.2);border-radius:3px;padding:14px 16px">'+
+        '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(29,95,138,.8);margin-bottom:10px">Navigation cabinet</div>'+
+        '<div style="font-size:11px;color:rgba(26,23,20,.65);line-height:1.85">'+
+          '<b>Dashboard</b> : vue globale, RDV du jour, derniers patients, sequence patient<br>'+
+          '<b>Patients</b> : liste filtrable par masque / statut, creation, suppression<br>'+
+          '<b>Agenda</b> : grille semaine, clic sur creneau pour creer un RDV, statuts<br>'+
+          '<b>Outils</b> : acces direct a tous les outils sans dossier patient obligatoire<br>'+
+          '<b>Documents</b> : depot par glisser-deposer, classement par patient<br>'+
+          '<b>Fiche patient</b> : 4 onglets : Apercu / Parcours / Bilans / Livrets'+
+        '</div>'+
+      '</div>'+
+      '<div style="text-align:center;font-size:10px;color:rgba(26,23,20,.3);padding:6px">Cabinet psyH &mdash; Methode V.A.L.E.U.R&#169; &mdash; &#169; Celine Bourbon</div>'+
+    '</div></div>';
+  document.body.appendChild(box);
+  document.getElementById('guide-close').addEventListener('click',function(){box.remove();});
+  box.addEventListener('click',function(e){if(e.target===box)box.remove();});
+}
+
 function toast(msg,type,dur){
   type=type||'info';dur=dur||3500;
   var stack=document.getElementById('_ts');

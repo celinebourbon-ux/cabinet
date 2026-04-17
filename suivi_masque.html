@@ -310,7 +310,10 @@ async function api(action,body={},method='POST',retries=2){
   }
 }
 async function loadData(){
-  if(!PATIENT_ID){document.getElementById('content').innerHTML='<div style="padding:60px;text-align:center;color:#B5312A;font-family:var(--serif);font-size:18px">ID patient manquant</div>';return}
+  if(!PATIENT_ID || isNaN(PATIENT_ID)){
+    document.getElementById('content').innerHTML='<div style="text-align:center;padding:80px 24px"><div style="font-size:32px;opacity:.25;margin-bottom:16px">⚠</div><div style="font-family:var(--serif);font-size:20px;font-weight:300;color:#1A1714;margin-bottom:8px">Aucun patient sélectionné</div><div style="font-size:12px;color:rgba(26,23,20,.35);margin-bottom:24px">Ouvrez cet outil depuis un dossier patient.</div><a href=\"index.html\" style=\"display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:#14100D;color:#F5F1EB;border-radius:3px;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase\">← Tableau de bord</a></div>';
+    return;
+  }
   try{
     const d = await api('get_patient',{id:PATIENT_ID},'GET');
     PATIENT = d.patient;

@@ -196,6 +196,13 @@ const LIVRET_URLS = {
   bleu:'https://parcours.valeur.psyh.fr/livret_bleu.html',
   indigo:'https://parcours.valeur.psyh.fr/livret_indigo.html',
   violet:'https://parcours.valeur.psyh.fr/livret_violet.html',
+  defis_rouge:'https://parcours.valeur.psyh.fr/workbook_21defis_rouge.html',
+  defis_orange:'https://parcours.valeur.psyh.fr/workbook_21defis_orange.html',
+  defis_jaune:'https://parcours.valeur.psyh.fr/workbook_21defis_jaune.html',
+  defis_vert:'https://parcours.valeur.psyh.fr/workbook_21defis_vert.html',
+  defis_bleu:'https://parcours.valeur.psyh.fr/workbook_21defis_bleu.html',
+  defis_indigo:'https://parcours.valeur.psyh.fr/workbook_21defis_indigo.html',
+  defis_violet:'https://parcours.valeur.psyh.fr/workbook_21defis_violet.html',
 };
 
 const params = new URLSearchParams(location.search);
@@ -309,7 +316,9 @@ async function startLivret() {
   document.getElementById('livret-inject').classList.add('on');
 
   // Déterminer l'URL du livret à charger
-  const livretKey = SESSION.livret_type === 'masque' ? SESSION.masque : SESSION.livret_type;
+  const livretKey = SESSION.livret_type === 'masque' ? SESSION.masque :
+    SESSION.livret_type === 'defis' ? ('defis_' + SESSION.masque) :
+    SESSION.livret_type;
   const livretUrl = LIVRET_URLS[livretKey];
 
   if (!livretUrl) { toast('Livret non trouvé.', 'err'); return; }

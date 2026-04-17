@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Accès Praticien — Collection V.A.L.E.U.R©</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --f:#F5F1EB;--f2:#EDE8DF;--f3:#E0D8C8;
+  --ink:#1A1714;--ink3:rgba(26,23,20,.32);
+  --dark:#14100D;--gold:#A8873A;--gold2:#BFA050;
+  --line:rgba(26,23,20,.08);
+  --rouge:#B5312A;--orange:#C4581F;--jaune:#B8930A;
+  --vert:#2D7A4F;--bleu:#1D5F8A;--indigo:#5C3280;--violet:#7A3594;
+  --serif:"Cormorant Garamond",serif;--sans:"DM Sans",sans-serif;
+  --r:3px;
+}
+body{font-family:var(--sans);background:var(--f2);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:13px;min-height:100vh}
+.chr{display:flex;height:3px;width:100%;position:fixed;top:0;left:0;z-index:100}
+.chr span{flex:1}
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.auth-card{background:var(--f);border:1px solid var(--line);border-radius:4px;padding:40px 36px;width:min(380px,100%);text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.auth-logo{font-family:var(--serif);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:block}
+.auth-title{font-family:var(--serif);font-size:22px;font-weight:300;margin-bottom:4px}
+.auth-sub{font-size:11px;color:var(--ink3);margin-bottom:24px}
+.auth-input{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--f2);font-family:var(--sans);font-size:13px;color:var(--ink);outline:none;text-align:center;margin-bottom:10px;transition:border-color .2s}
+.auth-input:focus{border-color:var(--gold);background:var(--f)}
+.auth-btn{width:100%;padding:11px;background:var(--gold);color:#fff;border:none;border-radius:var(--r);cursor:pointer;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:background .2s}
+.auth-btn:hover{background:var(--gold2)}
+.auth-err{font-size:11px;color:var(--rouge);margin-top:8px;min-height:16px}
+
+#app{display:none;padding:40px 24px 60px;max-width:960px;margin:0 auto}
+.page-title{font-family:var(--serif);font-size:28px;font-weight:300;margin-bottom:4px;padding-top:20px}
+.page-sub{font-size:12px;color:var(--ink3);margin-bottom:28px}
+
+.section-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;margin-top:24px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+
+.livret-card{background:var(--f);border:1px solid var(--line);border-radius:var(--r);padding:18px;text-decoration:none;display:block;transition:all .16s;cursor:pointer}
+.livret-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(0,0,0,.08);transform:translateY(-1px)}
+.lc-icon{font-size:22px;margin-bottom:10px}
+.lc-name{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--ink);margin-bottom:3px}
+.lc-desc{font-size:11px;color:var(--ink3);line-height:1.5}
+.lc-tag{display:inline-block;margin-top:8px;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+
+.note{background:rgba(168,135,58,.07);border:1px solid rgba(168,135,58,.2);border-radius:var(--r);padding:12px 16px;font-size:11px;color:rgba(26,23,20,.65);line-height:1.7;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="chr"><span style="background:#B5312A"></span><span style="background:#C4581F"></span><span style="background:#B8930A"></span><span style="background:#2D7A4F"></span><span style="background:#1D5F8A"></span><span style="background:#5C3280"></span><span style="background:#7A3594"></span></div>
+
+<div id="auth-screen">
+  <div class="auth-card">
+    <span class="auth-logo">V.A.L.E.U.R©</span>
+    <div class="auth-title">Espace Praticien</div>
+    <div class="auth-sub">Collection complète des livrets</div>
+    <input type="password" class="auth-input" id="auth-pwd" placeholder="Mot de passe praticien" autocomplete="current-password">
+    <button class="auth-btn" onclick="doAuth()">Accéder à la collection</button>
+    <div class="auth-err" id="auth-err"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="page-title">Collection V.A.L.E.U.R©</div>
+  <div class="page-sub">Accès praticien — Tous les livrets débloqués</div>
+
+  <div class="section-title">Livret Fondation</div>
+  <div class="grid">
+    <a class="livret-card" href="livret_psychoeducation.html" target="_blank">
+      <div class="lc-icon">📖</div>
+      <div class="lc-name">Psychoéducation</div>
+      <div class="lc-desc">Biologie de la peur · SNA · Fenêtre de tolérance · Cohérence cardiaque</div>
+      <span class="lc-tag" style="background:rgba(168,135,58,.12);color:var(--gold);border:1px solid rgba(168,135,58,.25)">Commun à tous</span>
+    </a>
+  </div>
+
+  <div class="section-title">Livrets Masques — 7 parcours de transformation</div>
+  <div class="grid" id="grid-masques"></div>
+
+  <div class="section-title">Workbooks Défis 21 jours — Ancrage comportemental</div>
+  <div class="grid" id="grid-defis"></div>
+
+  <div class="section-title">Fiche diagnostique</div>
+  <div class="grid">
+    <a class="livret-card" href="fiche_masque_dominant.html" target="_blank">
+      <div class="lc-icon">🗂</div>
+      <div class="lc-name">Fiche Masque Dominant</div>
+      <div class="lc-desc">Portrait condensé · Manifestations · Ressources · Plan d'action</div>
+      <span class="lc-tag" style="background:rgba(168,135,58,.12);color:var(--gold);border:1px solid rgba(168,135,58,.25)">Tous masques</span>
+    </a>
+  </div>
+
+  <div class="note">
+    <b>Usage praticien :</b> ces livrets sont réservés à votre consultation interne. Pour donner accès à un patient, utilisez le cabinet (cabinet.psyh.fr) → fiche patient → onglet Livrets → Donner accès. Un lien tokenisé sera généré automatiquement.
+  </div>
+</div>
+
+<script>
+var PWD = 'ValeurPraticien2026';
+var ADMIN_KEY = 'VALEUR-ADMIN-2025';
+
+var MASQUES = [
+  {key:'rouge',label:'Rouge',peur:'Mort · Maladie',c:'#B5312A',f:'livret_rouge.html'},
+  {key:'orange',label:'Orange',peur:'Souffrance psychique',c:'#C4581F',f:'livret_orange.html'},
+  {key:'jaune',label:'Jaune',peur:'Inconnu · Incertitude',c:'#B8930A',f:'livret_jaune.html'},
+  {key:'vert',label:'Vert',peur:'Rejet · Abandon',c:'#2D7A4F',f:'livret_vert.html'},
+  {key:'bleu',label:'Bleu',peur:'Impuissance',c:'#1D5F8A',f:'livret_bleu.html'},
+  {key:'indigo',label:'Indigo',peur:'Echec · Inadéquation',c:'#5C3280',f:'livret_indigo.html'},
+  {key:'violet',label:'Violet',peur:'Perte d&#39;identite',c:'#7A3594',f:'livret_violet.html'},
+];
+
+function doAuth(){
+  var v = document.getElementById('auth-pwd').value;
+  var isAdmin = new URLSearchParams(location.search).get('admin') === ADMIN_KEY;
+  if(v === PWD || isAdmin){
+    sessionStorage.setItem('praticien_v2','1');
+    showApp();
+  } else {
+    document.getElementById('auth-err').textContent = 'Mot de passe incorrect';
+    document.getElementById('auth-pwd').value = '';
+    document.getElementById('auth-pwd').focus();
+  }
+}
+document.getElementById('auth-pwd').addEventListener('keydown', function(e){ if(e.key==='Enter') doAuth(); });
+
+function showApp(){
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  buildGrids();
+}
+
+function buildGrids(){
+  var gm = document.getElementById('grid-masques');
+  var gd = document.getElementById('grid-defis');
+  gm.innerHTML = MASQUES.map(function(m){
+    return '<a class="livret-card" href="'+m.f+'" target="_blank">'+
+      '<div class="lc-icon" style="color:'+m.c+'">🎭</div>'+
+      '<div class="lc-name">Masque '+m.label+'</div>'+
+      '<div class="lc-desc">'+m.peur+'</div>'+
+      '<span class="lc-tag" style="background:'+m.c+'14;color:'+m.c+';border:1px solid '+m.c+'28">Livret complet</span>'+
+    '</a>';
+  }).join('');
+  gd.innerHTML = MASQUES.map(function(m){
+    return '<a class="livret-card" href="workbook_21defis_'+m.key+'.html" target="_blank">'+
+      '<div class="lc-icon" style="color:'+m.c+'">✦</div>'+
+      '<div class="lc-name">Défis 21j · '+m.label+'</div>'+
+      '<div class="lc-desc">Ancrage comportemental · 3 semaines progressives</div>'+
+      '<span class="lc-tag" style="background:'+m.c+'14;color:'+m.c+';border:1px solid '+m.c+'28">Workbook</span>'+
+    '</a>';
+  }).join('');
+}
+
+if(sessionStorage.getItem('praticien_v2')==='1' || new URLSearchParams(location.search).get('admin')===ADMIN_KEY){
+  showApp();
+}
+</script>
+</body>
+</html>

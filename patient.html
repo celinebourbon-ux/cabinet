@@ -281,7 +281,7 @@ const STEPS_DEF = [
   {key:'bilan_final',   label:'Bilan final',        desc:'Nouveau questionnaire — comparaison initiale/finale', icon:'✨', isBilan:true},
 ];
 
-let PATIENT = null, SESSIONS = [], PROGRESS = [], PATIENT_ID = null;
+let PATIENT = null, SESSIONS = [], PROGRESS = [], PATIENT_ID = null, LIVRET_ACCESS = [];
 const params = new URLSearchParams(location.search);
 PATIENT_ID = parseInt(params.get('id'));
 if(!PATIENT_ID || isNaN(PATIENT_ID)){
@@ -526,7 +526,7 @@ function render(){
     <div id="panel-livrets" class="tab-panel" style="display:none">
       <div style="padding:20px 24px" id="livrets-content">
         <div style="font-family:var(--serif);font-size:18px;font-weight:300;color:var(--ink);margin-bottom:16px">Accès aux livrets de ${p.initiales}</div>
-        ${renderLivretAccess()}
+        ${renderLivretAccess(p, LIVRET_ACCESS)}
       </div>
     </div>`;
 
@@ -638,7 +638,7 @@ async function saveGlobalNotes(){
 
 function newBilan(){
   if(!PATIENT_ID)return;
-  window.location.href=`questionnaire.html?patient_id=${PATIENT_ID}&cabinet=1`;
+  window.location.href=`questionnaire_patient.html?patient_id=${PATIENT_ID}&cabinet=1`;
 }
 
 function printEvo(){window.print()}
