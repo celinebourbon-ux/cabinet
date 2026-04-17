@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon livret V.A.L.E.U.R©</title>
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --f:#F5F1EB;--f2:#EDE8DF;--f3:#E2DBC8;
+  --ink:#1A1714;--ink2:rgba(26,23,20,.65);--ink3:rgba(26,23,20,.35);
+  --dark:#1C1916;--gold:#A8873A;
+  --line:rgba(26,23,20,.08);--line2:rgba(26,23,20,.04);
+  --MC:#A8873A;/* mis à jour via JS */
+  --serif:'Cormorant Garamond',serif;--sans:'DM Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:var(--sans);background:var(--dark);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  -webkit-user-select:none;user-select:none;
+  -moz-user-select:none;-ms-user-select:none;
+}
+/* Permettre la saisie dans les zones de travail */
+textarea,input[type=text]{-webkit-user-select:text!important;user-select:text!important}
+
+/* ANTI-IMPRESSION — absolu */
+@media print{
+  body,html{display:none!important;visibility:hidden!important}
+  *{display:none!important}
+}
+
+/* ÉTAT INITIAL — plein écran sombre */
+#splash{
+  position:fixed;inset:0;z-index:900;background:var(--dark);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+}
+.splash-logo{font-family:var(--serif);font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(168,135,58,.7);margin-bottom:24px}
+.splash-title{font-family:var(--serif);font-size:28px;font-weight:300;color:rgba(245,241,235,.85);text-align:center;line-height:1.4;max-width:400px;margin-bottom:8px}
+.splash-sub{font-family:var(--serif);font-size:15px;font-style:italic;color:rgba(245,241,235,.4);text-align:center}
+.splash-err{color:#E57373;font-size:14px;text-align:center;padding:0 32px;line-height:1.7;margin-top:16px}
+
+/* BARRE DE NAVIGATION FIXE */
+#lms-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:52px;background:var(--dark);border-bottom:1px solid rgba(245,241,235,.07);
+  display:none;align-items:center;justify-content:space-between;padding:0 20px;gap:12px;
+}
+#lms-nav.on{display:flex}
+.nav-brand{font-family:var(--serif);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(168,135,58,.75)}
+.nav-title{font-family:var(--serif);font-size:14px;font-weight:300;color:rgba(245,241,235,.7);font-style:italic}
+.nav-right{display:flex;align-items:center;gap:10px}
+.save-indicator{font-size:10px;color:rgba(245,241,235,.3);display:flex;align-items:center;gap:5px;transition:color .3s}
+.save-indicator.saving{color:rgba(168,135,58,.7)}
+.save-indicator.saved{color:rgba(45,122,79,.7)}
+.save-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* BANDEAU COULEURS */
+.chroma{display:flex;height:2px}
+.chroma div{flex:1}
+
+/* CONTENU PRINCIPAL */
+#lms-content{
+  display:none;padding-top:52px;min-height:100vh;
+  background:var(--f);position:relative;
+}
+#lms-content.on{display:block}
+
+/* FILIGRANE */
+#filigrane{
+  position:fixed;inset:0;z-index:50;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  transform:rotate(-30deg);
+}
+.fil-text{
+  font-family:var(--serif);font-size:18px;font-weight:300;
+  color:rgba(26,23,20,.04);letter-spacing:3px;text-transform:uppercase;
+  white-space:nowrap;line-height:2.5;
+}
+
+/* IFRAME DU LIVRET */
+#livret-frame{
+  width:100%;
+  border:none;
+  min-height:calc(100vh - 52px);
+  background:var(--f);
+  display:block;
+}
+
+/* BARRE DE PROGRESSION */
+#prog-bar{
+  position:fixed;top:52px;left:0;right:0;z-index:99;
+  height:2px;background:rgba(26,23,20,.06);
+}
+#prog-fill{height:100%;background:var(--MC);border-radius:0 2px 2px 0;transition:width .5s;width:0%}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--dark);color:var(--f);padding:11px 18px;border-radius:2px;border-left:3px solid var(--gold);font-size:12px;transform:translateY(14px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.on{transform:translateY(0);opacity:1}
+
+/* PAGE BIENVENUE */
+#welcome{display:none;padding:48px 32px;max-width:640px;margin:0 auto}
+#welcome.on{display:block}
+.wlc-badge{display:inline-block;padding:4px 12px;border-radius:2px;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
+.wlc-title{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:12px}
+.wlc-sub{font-family:var(--serif);font-size:17px;font-style:italic;color:var(--ink2);line-height:1.75;margin-bottom:32px}
+.wlc-rules{background:var(--f2);border:1px solid var(--line);border-radius:2px;padding:20px 24px;margin-bottom:28px}
+.wlc-rule{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--line2);font-size:13px;color:var(--ink2);line-height:1.6}
+.wlc-rule:last-child{border-bottom:none}
+.wlc-rule-icon{width:20px;flex-shrink:0;margin-top:1px;font-size:14px}
+.wlc-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--MC);color:#fff;border:none;border-radius:2px;cursor:pointer;font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;width:100%;justify-content:center;font-size:12px}
+.wlc-btn:hover{opacity:.9}
+
+/* MODE INJECTION — le livret est chargé inline */
+#livret-inject{display:none;padding:0}
+#livret-inject.on{display:block}
+</style>
+</head>
+<body>
+
+<!-- SPLASH / LOADING -->
+<div id="splash">
+  <div class="chroma" style="position:absolute;top:0;left:0;right:0"><div style="background:#B5312A"></div><div style="background:#C4581F"></div><div style="background:#B8930A"></div><div style="background:#2D7A4F"></div><div style="background:#1D5F8A"></div><div style="background:#5C3280"></div><div style="background:#7A3594"></div></div>
+  <div class="splash-logo">V.A.L.E.U.R©</div>
+  <div class="splash-title" id="splash-title">Vérification de votre accès...</div>
+  <div class="splash-sub" id="splash-sub">Méthode V.A.L.E.U.R© · Céline Bourbon</div>
+  <div class="splash-err" id="splash-err" style="display:none"></div>
+</div>
+
+<!-- FILIGRANE DYNAMIQUE -->
+<div id="filigrane" style="display:none">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+    <div class="fil-text" id="fil-line1"></div>
+    <div class="fil-text" id="fil-line2"></div>
+    <div class="fil-text" id="fil-line1b"></div>
+    <div class="fil-text" id="fil-line2b"></div>
+    <div class="fil-text" id="fil-line1c"></div>
+    <div class="fil-text" id="fil-line2c"></div>
+  </div>
+</div>
+
+<!-- BARRE NAV LMS -->
+<div id="lms-nav">
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="nav-brand">V.A.L.E.U.R©</div>
+    <div class="nav-title" id="nav-title">Chargement...</div>
+  </div>
+  <div class="nav-right">
+    <div class="save-indicator" id="save-indicator">
+      <div class="save-dot"></div>
+      <span id="save-label">Sauvegarde auto</span>
+    </div>
+  </div>
+</div>
+
+<!-- BARRE PROGRESSION -->
+<div id="prog-bar"><div id="prog-fill"></div></div>
+
+<!-- CONTENU LMS -->
+<div id="lms-content">
+  <!-- PAGE DE BIENVENUE -->
+  <div id="welcome">
+    <div class="wlc-badge" id="wlc-badge">Livret</div>
+    <h1 class="wlc-title" id="wlc-title">Votre livret</h1>
+    <p class="wlc-sub" id="wlc-sub">Ce livret vous accompagne entre les séances.</p>
+    <div class="wlc-rules">
+      <div class="wlc-rule"><span class="wlc-rule-icon">✍</span><span>Vos réponses sont <strong>sauvegardées automatiquement</strong> — vous pouvez fermer et reprendre à tout moment.</span></div>
+      <div class="wlc-rule"><span class="wlc-rule-icon">🔒</span><span>Ce livret est <strong>personnel et confidentiel</strong> — il ne peut pas être imprimé ni copié.</span></div>
+      <div class="wlc-rule"><span class="wlc-rule-icon">⏱</span><span>Prenez le temps qu'il vous faut. Il n'y a pas de bonne vitesse pour ce travail.</span></div>
+      <div class="wlc-rule"><span class="wlc-rule-icon">✦</span><span>Écrivez ce qui vient — sans corriger, sans censurer. Ce qui arrive en premier est souvent le plus juste.</span></div>
+    </div>
+    <button class="wlc-btn" id="wlc-start">Commencer mon livret</button>
+  </div>
+
+  <!-- LIVRET INJECTÉ -->
+  <div id="livret-inject"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://valeur-backend-api.vercel.app/api/cabinet';
+const MC = {rouge:'#B5312A',orange:'#C4581F',jaune:'#B8930A',vert:'#2D7A4F',bleu:'#1D5F8A',indigo:'#5C3280',violet:'#7A3594'};
+const ML = {rouge:'Rouge',orange:'Orange',jaune:'Jaune',vert:'Vert',bleu:'Bleu',indigo:'Indigo',violet:'Violet'};
+const LIVRET_LABELS = {psychoeducation:'Livret Psychoéducation',masque:'Livret Masque Dominant',defis:'Livret Défis 21 jours'};
+const LIVRET_URLS = {
+  psychoeducation:'https://parcours.valeur.psyh.fr/livret_psychoeducation.html',
+  rouge:'https://parcours.valeur.psyh.fr/livret_rouge.html',
+  orange:'https://parcours.valeur.psyh.fr/livret_orange.html',
+  jaune:'https://parcours.valeur.psyh.fr/livret_jaune.html',
+  vert:'https://parcours.valeur.psyh.fr/livret_vert.html',
+  bleu:'https://parcours.valeur.psyh.fr/livret_bleu.html',
+  indigo:'https://parcours.valeur.psyh.fr/livret_indigo.html',
+  violet:'https://parcours.valeur.psyh.fr/livret_violet.html',
+};
+
+const params = new URLSearchParams(location.search);
+const TOKEN = params.get('token');
+let SESSION = null;
+let workData = {};
+let saveTimer = null;
+let totalInputs = 0;
+let filledInputs = 0;
+
+// ANTI-COPIE & ANTI-IMPRESSION renforcés
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  // Bloquer Ctrl+P, Ctrl+S, Ctrl+U (source), F12
+  if ((e.ctrlKey || e.metaKey) && ['p','s','u'].includes(e.key.toLowerCase())) {
+    e.preventDefault(); e.stopPropagation();
+    toast('Ce document ne peut pas être imprimé ni sauvegardé.');
+    return false;
+  }
+  if (e.key === 'F12') { e.preventDefault(); return false; }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].includes(e.key.toLowerCase())) {
+    e.preventDefault(); return false;
+  }
+});
+// Intercepter window.print()
+window.print = () => { toast('L\'impression de ce livret n\'est pas autorisée.'); };
+
+// Détecter tentative d'impression via media query
+if (window.matchMedia) {
+  window.matchMedia('print').addEventListener('change', e => {
+    if (e.matches) document.body.style.display = 'none';
+    else document.body.style.display = '';
+  });
+}
+
+async function api(action, body = {}) {
+  const r = await fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, ...body })
+  });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+async function apiGet(action, params_extra = {}) {
+  const p = new URLSearchParams({ action, ...params_extra });
+  const r = await fetch(`${API}?${p}`);
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+// INITIALISATION
+async function init() {
+  if (!TOKEN) {
+    showError('Lien invalide. Contactez votre praticien.');
+    return;
+  }
+  try {
+    const d = await apiGet('validate_livret_token', { token: TOKEN });
+    if (!d.valid) { showError('Ce lien a expiré ou a déjà été utilisé.<br>Contactez votre praticien pour en obtenir un nouveau.'); return; }
+
+    SESSION = d;
+    const masqueColor = MC[d.masque] || '#A8873A';
+    document.documentElement.style.setProperty('--MC', masqueColor);
+
+    // Filigrane
+    const now = new Date().toLocaleDateString('fr-FR');
+    const filText = `${d.initiales} · V.A.L.E.U.R© · ${now}`;
+    ['fil-line1','fil-line1b','fil-line1c'].forEach(id => document.getElementById(id).textContent = filText);
+    ['fil-line2','fil-line2b','fil-line2c'].forEach(id => document.getElementById(id).textContent = '© Céline Bourbon · Non reproductible');
+    document.getElementById('filigrane').style.display = 'flex';
+
+    // Nav
+    const livretLabel = d.livret_type === 'masque'
+      ? `Livret Masque ${ML[d.masque] || d.masque}`
+      : LIVRET_LABELS[d.livret_type] || 'Livret';
+    document.getElementById('nav-title').textContent = livretLabel;
+    document.getElementById('lms-nav').classList.add('on');
+    document.getElementById('prog-bar').style.display = 'block';
+
+    // Page bienvenue
+    const badge = document.getElementById('wlc-badge');
+    badge.textContent = livretLabel;
+    badge.style.cssText += `;background:${masqueColor}18;color:${masqueColor};border:1px solid ${masqueColor}35`;
+    document.getElementById('wlc-title').textContent = `Bienvenue, ${d.initiales}`;
+    document.getElementById('wlc-sub').textContent = d.livret_type === 'masque'
+      ? `Votre livret Masque ${ML[d.masque] || ''} vous accompagne sur 12 semaines de transformation.`
+      : d.livret_type === 'psychoeducation'
+      ? 'Ce livret pose les fondations de votre parcours. Prenez le temps de l\'habiter.'
+      : 'Ces 21 défis ancrent ce que vous avez traversé. Un par un, à votre rythme.';
+
+    // Récupérer travail existant
+    const wd = await apiGet('get_livret_work', { token: TOKEN });
+    if (wd.work?.work_data) workData = wd.work.work_data;
+
+    // Afficher
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('lms-content').classList.add('on');
+    document.getElementById('welcome').classList.add('on');
+
+    document.getElementById('wlc-start').addEventListener('click', startLivret);
+
+  } catch(e) {
+    showError('Une erreur est survenue. Vérifiez votre connexion et réessayez.');
+  }
+}
+
+async function startLivret() {
+  document.getElementById('welcome').classList.remove('on');
+  document.getElementById('livret-inject').classList.add('on');
+
+  // Déterminer l'URL du livret à charger
+  const livretKey = SESSION.livret_type === 'masque' ? SESSION.masque : SESSION.livret_type;
+  const livretUrl = LIVRET_URLS[livretKey];
+
+  if (!livretUrl) { toast('Livret non trouvé.', 'err'); return; }
+
+  // Charger le livret via fetch puis l'injecter (même domaine parcours.valeur.psyh.fr)
+  try {
+    const resp = await fetch(livretUrl);
+    if (!resp.ok) throw new Error(resp.status);
+    let html = await resp.text();
+
+    // PATCH : supprimer le bouton d'impression du livret
+    html = html.replace(/printLivret\(\)/g, 'void 0');
+    html = html.replace(/<[^>]*onclick="[^"]*print[^"]*"[^>]*>[^<]*<\/[^>]+>/gi, '');
+    // Supprimer les boutons impression et téléchargement
+    html = html.replace(/class="[^"]*print[^"]*"/g, 'class="no-display"');
+
+    // PATCH : supprimer le script localStorage et le remplacer par notre sauvegarde API
+    html = html.replace(
+      /const KEY='[^']+';[\s\S]*?setInterval\(save,\s*\d+\);/m,
+      '/* sauvegarde gérée par le portail LMS */'
+    );
+
+    // Injecter dans la page
+    const inject = document.getElementById('livret-inject');
+    inject.innerHTML = html;
+
+    // Exécuter les scripts du livret
+    inject.querySelectorAll('script').forEach(s => {
+      const ns = document.createElement('script');
+      if (s.src) ns.src = s.src;
+      else ns.textContent = s.textContent;
+      document.head.appendChild(ns);
+    });
+
+    // Restaurer le travail existant
+    setTimeout(() => {
+      restoreWork();
+      hookInputs();
+      updateProgress();
+    }, 800);
+
+  } catch(e) {
+    // Fallback : iframe si CORS bloque
+    const inject = document.getElementById('livret-inject');
+    inject.innerHTML = `<iframe id="livret-frame" src="${livretUrl}" style="width:100%;min-height:calc(100vh - 54px);border:none"></iframe>`;
+    // Mode iframe : sauvegarde via postMessage
+    document.getElementById('livret-frame').addEventListener('load', () => {
+      restoreWorkIframe();
+      setInterval(saveWorkIframe, 30000);
+    });
+  }
+}
+
+// SAUVEGARDE & RESTAURATION — mode injection
+function restoreWork() {
+  document.querySelectorAll('#livret-inject input[type=text]').forEach((el, i) => {
+    if (workData['i' + i]) el.value = workData['i' + i];
+  });
+  document.querySelectorAll('#livret-inject textarea').forEach((el, i) => {
+    if (workData['t' + i]) el.value = workData['t' + i];
+  });
+  document.querySelectorAll('#livret-inject .cb').forEach((el, i) => {
+    if (workData['cb' + i]) el.classList.add('on');
+  });
+}
+
+function hookInputs() {
+  const inputs = document.querySelectorAll('#livret-inject input[type=text], #livret-inject textarea');
+  totalInputs = inputs.length;
+  inputs.forEach((el, i) => {
+    el.addEventListener('input', () => {
+      clearTimeout(saveTimer);
+      showSaving();
+      saveTimer = setTimeout(saveWork, 2000);
+    });
+  });
+  document.querySelectorAll('#livret-inject .cb').forEach(el => {
+    el.addEventListener('click', () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveWork, 1000);
+    });
+  });
+  // Sauvegarde auto toutes les 30 secondes
+  setInterval(saveWork, 30000);
+}
+
+function collectWork() {
+  const data = {};
+  document.querySelectorAll('#livret-inject input[type=text]').forEach((el, i) => { if (el.value) data['i' + i] = el.value; });
+  document.querySelectorAll('#livret-inject textarea').forEach((el, i) => { if (el.value) data['t' + i] = el.value; });
+  document.querySelectorAll('#livret-inject .cb.on').forEach(el => {
+    const idx = Array.from(document.querySelectorAll('#livret-inject .cb')).indexOf(el);
+    data['cb' + idx] = 1;
+  });
+  return data;
+}
+
+async function saveWork() {
+  workData = collectWork();
+  const filled = Object.keys(workData).length;
+  try {
+    await api('save_livret_work', { token: TOKEN, work_data: workData, last_page: getCurrentPage(), pages_seen: [] });
+    showSaved();
+    updateProgress();
+  } catch(e) { showError2(); }
+}
+
+function getCurrentPage() {
+  // Essayer de trouver la page visible dans le livret
+  const pages = document.querySelectorAll('#livret-inject .page, #livret-inject section');
+  for (let i = 0; i < pages.length; i++) {
+    const r = pages[i].getBoundingClientRect();
+    if (r.top >= 0 && r.top < window.innerHeight) return i;
+  }
+  return 0;
+}
+
+function updateProgress() {
+  const filled = Object.keys(workData).length;
+  const pct = totalInputs > 0 ? Math.min(100, Math.round(filled / totalInputs * 100)) : 0;
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+
+// MODE IFRAME (fallback)
+function restoreWorkIframe() {
+  const iframe = document.getElementById('livret-frame');
+  if (!iframe || !iframe.contentWindow) return;
+  iframe.contentWindow.postMessage({ type: 'restore_work', data: workData }, '*');
+}
+
+function saveWorkIframe() {
+  const iframe = document.getElementById('livret-frame');
+  if (!iframe || !iframe.contentWindow) return;
+  iframe.contentWindow.postMessage({ type: 'get_work' }, '*');
+}
+
+window.addEventListener('message', async (e) => {
+  if (e.data?.type === 'work_data') {
+    workData = e.data.data || {};
+    try {
+      await api('save_livret_work', { token: TOKEN, work_data: workData });
+      showSaved();
+    } catch(err) {}
+  }
+});
+
+// UI
+function showSaving() {
+  const si = document.getElementById('save-indicator');
+  si.className = 'save-indicator saving';
+  document.getElementById('save-label').textContent = 'Sauvegarde...';
+}
+function showSaved() {
+  const si = document.getElementById('save-indicator');
+  si.className = 'save-indicator saved';
+  document.getElementById('save-label').textContent = 'Sauvegardé ✓';
+  setTimeout(() => {
+    si.className = 'save-indicator';
+    document.getElementById('save-label').textContent = 'Sauvegarde auto';
+  }, 3000);
+}
+function showError2() {
+  const si = document.getElementById('save-indicator');
+  si.className = 'save-indicator';
+  document.getElementById('save-label').textContent = 'Hors ligne — sera resynchronisé';
+}
+
+function showError(msg) {
+  document.getElementById('splash-title').style.display = 'none';
+  document.getElementById('splash-sub').style.display = 'none';
+  const err = document.getElementById('splash-err');
+  err.innerHTML = msg;
+  err.style.display = 'block';
+}
+
+function toast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = type === 'err' ? '#B5312A' : 'var(--gold)';
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 4000);
+}
+
+// Démarrage
+init();
+</script>
+</body>
+</html>

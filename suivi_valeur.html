@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Suivi V.A.L.E.U.R© — Cabinet</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --f:#F5F1EB;--f2:#EDE8DF;--f3:#E2DBC8;
+  --ink:#1A1714;--ink2:rgba(26,23,20,.65);--ink3:rgba(26,23,20,.35);
+  --dark:#1C1916;
+  --gold:#A8873A;
+  --line:rgba(26,23,20,.08);--line2:rgba(26,23,20,.04);
+  --rouge:#B5312A;--orange:#C4581F;--jaune:#B8930A;
+  --vert:#2D7A4F;--bleu:#1D5F8A;--indigo:#5C3280;--violet:#7A3594;
+  --serif:'Cormorant Garamond',serif;--sans:'DM Sans',sans-serif;
+  --sb:256px;--nav:56px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--f);color:var(--ink);-webkit-font-smoothing:antialiased}
+.chroma{display:flex;height:3px}
+.chroma div{flex:1}
+
+/* AUTH */
+#login{position:fixed;inset:0;z-index:900;background:var(--dark);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.lcard{background:rgba(245,241,235,.04);border:1px solid rgba(168,135,58,.2);border-radius:2px;padding:40px 44px;width:min(380px,92vw);text-align:center}
+.llogo{font-family:var(--serif);font-size:11px;letter-spacing:5px;text-transform:uppercase;color:rgba(168,135,58,.7);margin-bottom:20px}
+.ltitle{font-family:var(--serif);font-size:22px;font-weight:300;color:rgba(245,241,235,.85);margin-bottom:20px}
+.lpwd{width:100%;padding:11px 14px;background:rgba(245,241,235,.05);border:1px solid rgba(168,135,58,.22);border-radius:2px;font-family:var(--sans);font-size:13px;color:rgba(245,241,235,.8);outline:none;text-align:center;letter-spacing:3px;margin-bottom:14px}
+.lpwd:focus{border-color:rgba(168,135,58,.5)}
+.lbtn{width:100%;padding:12px;background:var(--gold);color:#fff;border:none;border-radius:2px;cursor:pointer;font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase}
+
+/* LAYOUT */
+#app{display:none;min-height:100vh}
+#app.on{display:flex}
+.sb{width:var(--sb);min-height:100vh;background:var(--dark);flex-shrink:0;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;display:flex;flex-direction:column}
+.sb-head{padding:24px 20px 18px;border-bottom:1px solid rgba(245,241,235,.05)}
+.sb-brand{font-family:var(--serif);font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(168,135,58,.75)}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 20px;cursor:pointer;font-size:12px;color:rgba(245,241,235,.42);border-left:2px solid transparent;transition:all .15s;text-decoration:none}
+.sb-item:hover{color:rgba(245,241,235,.75);background:rgba(245,241,235,.03)}
+.sb-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(168,135,58,.07)}
+.main{margin-left:var(--sb);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:var(--nav);background:var(--f);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:50}
+.tb-back{font-size:11px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;gap:6px}
+.tb-back:hover{color:var(--ink)}
+.content{padding:28px 32px 64px}
+
+/* BOUTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:2px;cursor:pointer;font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border:none;transition:all .18s}
+.btn-gold{background:var(--gold);color:#fff}.btn-gold:hover{background:#C4A550}
+.btn-ghost{background:transparent;color:var(--ink3);border:1px solid var(--line)}.btn-ghost:hover{color:var(--ink);border-color:rgba(26,23,20,.2)}
+.btn-sm{padding:6px 12px;font-size:9px}
+
+/* EN-TÊTE */
+.pt-bar{background:var(--f2);border:1px solid var(--line);border-radius:2px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;position:relative;overflow:hidden}
+.pt-bar::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--MCOLOR,var(--gold))}
+
+/* VUE D'ENSEMBLE */
+.overview-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:32px}
+.ov-card{
+  background:var(--f2);border:1px solid var(--line);border-radius:2px;
+  padding:14px 10px;text-align:center;cursor:pointer;
+  transition:all .18s;position:relative;overflow:hidden;
+}
+.ov-card:hover{border-color:rgba(168,135,58,.4);background:var(--f3)}
+.ov-card.active{border-color:var(--STEP_COLOR,var(--gold));background:rgba(168,135,58,.07)}
+.ov-letter{
+  font-family:var(--serif);font-size:32px;font-weight:300;line-height:1;
+  margin-bottom:6px;
+}
+.ov-nom{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.ov-thermo{display:flex;gap:2px;justify-content:center;margin-bottom:4px}
+.ov-dot{width:8px;height:8px;border-radius:50%;transition:background .2s}
+.ov-pct{font-size:10px;color:var(--ink3)}
+.ov-prog-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--line);overflow:hidden}
+.ov-prog-fill{height:100%;transition:width .4s;background:var(--STEP_COLOR,var(--gold))}
+
+/* DÉTAIL ÉTAPE */
+.step-detail{background:var(--f2);border:1px solid var(--line);border-radius:2px;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.sd-left{padding:24px 24px;border-right:1px solid var(--line)}
+.sd-right{padding:24px 24px}
+.sd-header{margin-bottom:20px}
+.sd-letter{font-family:var(--serif);font-size:52px;font-weight:300;line-height:1;margin-bottom:2px}
+.sd-nom{font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.sd-desc{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--ink2);line-height:1.65}
+
+/* THERMOMÈTRE D'ACQUISITION */
+.thermo-wrap{margin:20px 0}
+.thermo-label{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;display:block}
+.thermo-scale{display:flex;gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.thermo-level{
+  flex:1;padding:10px 4px;text-align:center;cursor:pointer;
+  font-size:9px;font-weight:400;line-height:1.3;
+  color:var(--ink3);transition:all .15s;
+  border-right:1px solid var(--line);
+}
+.thermo-level:last-child{border-right:none}
+.thermo-level:hover{background:rgba(168,135,58,.08)}
+.thermo-level.on{color:#fff;font-weight:500}
+.thermo-lbl{font-size:8px;letter-spacing:.5px;display:block;margin-top:3px;opacity:.8}
+
+/* INDICATEURS */
+.indic-section{margin-top:20px}
+.indic-title{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;display:block}
+.indic-list{display:flex;flex-direction:column;gap:8px}
+.indic-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 12px;border-radius:2px;border:1px solid var(--line2);
+  background:var(--f);cursor:pointer;transition:all .15s;
+}
+.indic-item:hover{border-color:rgba(26,23,20,.12)}
+.indic-item.checked{background:rgba(45,122,79,.05);border-color:rgba(45,122,79,.3)}
+.indic-box{
+  width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.indic-item.checked .indic-box{background:#2D7A4F;border-color:#2D7A4F}
+.indic-box svg{display:none}
+.indic-item.checked .indic-box svg{display:block}
+.indic-text{font-size:12px;color:var(--ink2);line-height:1.55}
+
+/* NOTES ÉTAPE */
+.notes-etape{
+  width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:2px;
+  background:var(--f);font-family:var(--sans);font-size:12px;color:var(--ink2);
+  resize:vertical;min-height:90px;outline:none;margin-top:16px;
+}
+.notes-etape:focus{border-color:rgba(168,135,58,.4)}
+
+/* RÉSUMÉ GLOBAL */
+.global-bar{
+  background:var(--f2);border:1px solid var(--line);border-radius:2px;
+  padding:20px 24px;margin-bottom:20px;
+}
+.gb-title{font-family:var(--serif);font-size:17px;font-weight:300;color:var(--ink);margin-bottom:16px}
+.gb-steps{display:flex;gap:0;border:1px solid var(--line);border-radius:2px;overflow:hidden;height:8px}
+.gb-step{flex:1;transition:background .4s}
+
+/* PRINT */
+@media print{
+  #login,#app .sb,.topbar,.btn,.no-print{display:none!important}
+  #app{display:block!important}.main{margin:0}
+  body{background:#fff}
+  .step-detail{grid-template-columns:1fr;border:none}
+  .sd-left{border-right:none}
+}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--dark);color:var(--f);padding:11px 18px;border-radius:2px;border-left:3px solid var(--gold);font-size:12px;transform:translateY(14px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.on{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){
+  .sb{display:none}.main{margin-left:0}
+  .overview-grid{grid-template-columns:repeat(3,1fr)}
+  .step-detail{grid-template-columns:1fr}
+  .sd-left{border-right:none;border-bottom:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="chroma" style="position:absolute;top:0;left:0;right:0">
+    <div style="background:#B5312A"></div><div style="background:#C4581F"></div>
+    <div style="background:#B8930A"></div><div style="background:#2D7A4F"></div>
+    <div style="background:#1D5F8A"></div><div style="background:#5C3280"></div>
+    <div style="background:#7A3594"></div>
+  </div>
+  <div class="lcard">
+    <p class="llogo">V.A.L.E.U.R©</p>
+    <h1 class="ltitle">Espace Cabinet</h1>
+    <input type="password" class="lpwd" id="lpwd" placeholder="Mot de passe" autocomplete="current-password">
+    <button class="lbtn" onclick="doLogin()">Accéder</button>
+    <p id="lerr" style="font-size:11px;color:#E57373;margin-top:10px;display:none">Incorrect</p>
+  </div>
+</div>
+
+<div id="app">
+  <aside class="sb">
+    <div class="sb-head">
+      <div class="sb-brand">V.A.L.E.U.R©</div>
+    </div>
+    <div class="chroma">
+      <div style="background:#B5312A"></div><div style="background:#C4581F"></div>
+      <div style="background:#B8930A"></div><div style="background:#2D7A4F"></div>
+      <div style="background:#1D5F8A"></div><div style="background:#5C3280"></div>
+      <div style="background:#7A3594"></div>
+    </div>
+    <div style="padding:16px 0;flex:1">
+      <a class="sb-item" href="index.html">← Dashboard</a>
+      <a class="sb-item" id="sb-patient-link" href="#">Dossier patient</a>
+      <a class="sb-item" id="sb-seance-link" href="#">Suivi séance</a>
+      <div class="sb-item active">Suivi V.A.L.E.U.R©</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:8px">
+        <a href="index.html" style="font-size:11px;color:rgba(26,23,20,.35);text-decoration:none;transition:color .15s" onmouseover="this.style.color='#1A1714'" onmouseout="this.style.color='rgba(26,23,20,.35)'">Cabinet</a>
+        <span style="color:rgba(26,23,20,.2)">›</span>
+        <a href="#" id="_bc_patient" style="font-size:11px;color:rgba(26,23,20,.35);text-decoration:none;transition:color .15s" onmouseover="this.style.color='#1A1714'" onmouseout="this.style.color='rgba(26,23,20,.35)'">Patient</a>
+        <span style="color:rgba(26,23,20,.2)">›</span>
+        <span id="_bc" style="font-size:11px;color:#1A1714;font-weight:500">Suivi V.A.L.E.U.R©</span>
+      </div>
+      <div style="display:flex;gap:8px" class="no-print">
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">Imprimer</button>
+        <button class="btn btn-gold btn-sm" onclick="saveAll()">Enregistrer tout</button>
+      </div>
+    </div>
+    <div class="content" id="content">
+      <div style="text-align:center;padding:80px;font-family:var(--serif);font-size:18px;color:var(--ink3);font-style:italic">Chargement...</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API   = 'https://valeur-backend-api.vercel.app/api/cabinet';
+const TOKEN = 'ValeurCabinet2026';
+const PWD   = 'ValeurCabinet2026';
+const MC    = {rouge:'#B5312A',orange:'#C4581F',jaune:'#B8930A',vert:'#2D7A4F',bleu:'#1D5F8A',indigo:'#5C3280',violet:'#7A3594'};
+const ML    = {rouge:'Rouge',orange:'Orange',jaune:'Jaune',vert:'Vert',bleu:'Bleu',indigo:'Indigo',violet:'Violet'};
+
+const STEPS = [
+  {key:'V', nom:'VOIR',      color:'#B5312A', desc:'Identifier le masque actif et son déclencheur précis',
+   indicateurs:['Nomme spontanément son masque dominant sans aide','Identifie le déclencheur précis d\'une réaction récente','Distingue la réaction automatique d\'un choix conscient','Reconnaît le schéma en temps réel ("là, c\'est mon masque")','Identifie ses situations récurrentes déclenchantes']},
+  {key:'A', nom:'ACCUEILLIR',color:'#C4581F', desc:'Recevoir l\'émotion sans la fuir ni la minimiser',
+   indicateurs:['Peut rester avec une émotion inconfortable sans la fuir','Ne minimise plus systématiquement ce qu\'il/elle ressent','Décrit l\'émotion avec des mots précis (pas seulement "stress")','Tolère une période d\'inconfort en séance','A rapporté avoir laissé une émotion traverser sans agir']},
+  {key:'L', nom:'LOCALISER', color:'#B8930A', desc:'Trouver la manifestation corporelle du masque',
+   indicateurs:['Localise précisément la manifestation corporelle','Décrit la texture, l\'intensité, la forme de la sensation','Perçoit le relâchement corporel après traversée de l\'émotion','Utilise le body scan de façon autonome','Fait le lien corps — activation du masque']},
+  {key:'E', nom:'EXPLORER',  color:'#2D7A4F', desc:'Identifier le conflit entre les deux parts',
+   indicateurs:['Identifie les deux parts en conflit sans se perdre dans l\'une','Peut nommer ce que chaque part veut et craint','Tolère l\'ambivalence sans la résoudre prématurément','Décrit le dialogue intérieur avec neutralité','Perçoit la logique protectrice du masque']},
+  {key:'U', nom:'UNIFIER',   color:'#1D5F8A', desc:'Réconcilier les parties — retrouver la cohérence',
+   indicateurs:['Ne rejette plus le masque comme ennemi','Peut reconnaître la logique protectrice passée du masque','Accède à sa nature authentique sous le masque','Décrit une réduction du conflit intérieur','Perçoit une cohérence interne nouvelle']},
+  {key:'R', nom:'RENFORCER', color:'#5C3280', desc:'Ancrer de nouveaux comportements — choisir sa réponse',
+   indicateurs:['A mis en place un nouveau comportement la semaine précédente','Décrit une situation gérée différemment grâce à la méthode','Les anciens automatismes sont moins fréquents ou moins intenses','Peut choisir sa réponse plutôt que la subir','Le masque s\'active toujours mais ne gouverne plus']},
+];
+
+const LEVELS = [
+  {v:0, label:'Non débuté', short:'—'},
+  {v:1, label:'Introduction', short:'①'},
+  {v:2, label:'En exploration', short:'②'},
+  {v:3, label:'En pratique', short:'③'},
+  {v:4, label:'Ancrage', short:'④'},
+  {v:5, label:'Intégré', short:'✓'},
+];
+
+const params = new URLSearchParams(location.search);
+const PATIENT_ID = parseInt(params.get('patient_id'));
+let PATIENT = null, MASQUE = null;
+let STATE = {}; // {V:{acq:0, indic:[], notes:''}, ...}
+let activeStep = 'V';
+
+// AUTH
+function doLogin(){
+  const v=document.getElementById('lpwd').value;
+  if(v===PWD){sessionStorage.setItem('cab','1');document.getElementById('login').style.display='none';document.getElementById('app').classList.add('on');loadData()}
+  else{document.getElementById('lerr').style.display='block';document.getElementById('lpwd').value=''}
+}
+document.getElementById('lpwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+if(sessionStorage.getItem('cab')==='1'){document.getElementById('login').style.display='none';document.getElementById('app').classList.add('on');loadData()}
+
+async function api(action,body={},method='POST',retries=2){
+  const ctrl=new AbortController();
+  const tmo=setTimeout(()=>ctrl.abort(),12000);
+  try{
+    const isGet=method==='GET';
+    const url=isGet?`${API}?action=${action}&${new URLSearchParams(body)}`:API;
+    const r=await fetch(url,{method,signal:ctrl.signal,
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body:isGet?undefined:JSON.stringify({action,...body})});
+    clearTimeout(tmo);
+    if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||`HTTP ${r.status}`);}
+    return r.json();
+  }catch(e){
+    clearTimeout(tmo);
+    if(retries>0&&e.name!=='AbortError'){
+      await new Promise(r=>setTimeout(r,700));
+      return api(action,body,method,retries-1);
+    }
+    throw e;
+  }
+}
+async function loadData(){
+  if(!PATIENT_ID || isNaN(PATIENT_ID)){
+    // Mode standalone : afficher sélecteur patient
+    document.getElementById('content').innerHTML = `
+      <div style="text-align:center;padding:80px 24px">
+        <div style="font-size:32px;opacity:.25;margin-bottom:16px">🎭</div>
+        <div style="font-family:var(--serif,serif);font-size:22px;font-weight:300;color:var(--ink,#1A1714);margin-bottom:8px">Aucun patient sélectionné</div>
+        <div style="font-size:12px;color:var(--ink3,rgba(26,23,20,.35));margin-bottom:28px;line-height:1.7">Cet outil peut être utilisé directement,<br>mais il est plus puissant lié à un dossier patient.</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:#14100D;color:#F5F1EB;border-radius:3px;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase">← Retour au cabinet</a>
+        </div>
+      </div>`;
+    return;
+  }
+  try{
+    const d = await api('get_patient',{id:PATIENT_ID},'GET');
+    PATIENT = d.patient;
+    MASQUE = PATIENT.masque;
+
+    document.getElementById('_bc_patient').href=`patient.html?id=${PATIENT_ID}`;
+    document.getElementById('_bc_patient').textContent=PATIENT.initiales;
+    document.getElementById('sb-patient-link').href=`patient.html?id=${PATIENT_ID}`;
+    document.getElementById('sb-seance-link').href=`suivi_masque.html?patient_id=${PATIENT_ID}`;
+    document.getElementById('back-btn').onclick=()=>window.location.href=`patient.html?id=${PATIENT_ID}`;
+
+    // Initialiser STATE depuis valeur_suivi
+    STEPS.forEach(s=>{ STATE[s.key]={acq:0, indic:[], notes:''}; });
+    (d.valeur_suivi||[]).forEach(row=>{
+      if(STATE[row.etape]){
+        STATE[row.etape].acq = row.acquisition||0;
+        STATE[row.etape].indic = row.indicateurs_coches||[];
+        STATE[row.etape].notes = row.notes||'';
+      }
+    });
+
+    render();
+  }catch(e){
+    const el=document.getElementById('content');
+    if(el) el.innerHTML='<div style="text-align:center;padding:60px 20px"><div style="font-size:28px;opacity:.2;margin-bottom:14px">⚠</div><div style="font-family:var(--serif);font-size:20px;font-weight:300;margin-bottom:8px">Erreur de chargement</div><div style="font-size:11px;color:var(--ink3);font-family:monospace;margin-bottom:20px">'+e.message+'</div><div style="display:flex;gap:10px;justify-content:center"><button onclick="loadData()" style="display:inline-flex;padding:8px 14px;border-radius:3px;background:#1A1714;color:#F5F1EB;border:none;cursor:pointer;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase">Réessayer</button><a href="index.html" style="display:inline-flex;align-items:center;padding:8px 14px;border-radius:3px;border:1px solid rgba(26,23,20,.1);color:rgba(26,23,20,.5);text-decoration:none;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase">← Cabinet</a></div></div>';
+  }
+}
+
+function render(){
+  const mc = MC[MASQUE]||'#A8873A';
+  const ml = ML[MASQUE]||'—';
+
+  document.getElementById('content').innerHTML = `
+    <!-- EN-TÊTE -->
+    <div class="pt-bar" style="--MCOLOR:${mc}">
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="font-family:var(--serif);font-size:22px;font-weight:300">${PATIENT.initiales}</span>
+        <span style="font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;background:${mc}18;color:${mc};border:1px solid ${mc}35">Masque ${ml}</span>
+      </div>
+      <span style="font-family:var(--serif);font-size:14px;font-weight:300;font-style:italic;color:var(--ink2)">Suivi V.A.L.E.U.R© — Progression par étape</span>
+    </div>
+
+    <!-- BARRE GLOBALE -->
+    <div class="global-bar">
+      <div class="gb-title">Progression globale V.A.L.E.U.R©</div>
+      <div class="gb-steps">
+        ${STEPS.map(s=>`<div class="gb-step" style="background:${STATE[s.key].acq>0?s.color+'${Math.round(STATE[s.key].acq/5*100)}':'rgba(26,23,20,.06)'}"></div>`).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        ${STEPS.map(s=>`<div style="flex:1;text-align:center;font-size:9px;font-weight:500;letter-spacing:1.5px;color:${STATE[s.key].acq>0?s.color:'var(--ink3)'}">${s.key}</div>`).join('')}
+      </div>
+    </div>
+
+    <!-- VUE D'ENSEMBLE -->
+    <div class="overview-grid">
+      ${STEPS.map(s=>{
+        const st = STATE[s.key];
+        const acq = st.acq;
+        const indicDone = st.indic.length;
+        const indicTotal = s.indicateurs.length;
+        const pct = Math.round(acq/5*100);
+        return `<div class="ov-card ${s.key===activeStep?'active':''}" style="--STEP_COLOR:${s.color}" onclick="selectStep('${s.key}')">
+          <div class="ov-letter" style="color:${acq>0?s.color:'var(--ink3)'}">${s.key}</div>
+          <div class="ov-nom">${s.nom}</div>
+          <div class="ov-thermo">
+            ${[1,2,3,4,5].map(i=>`<div class="ov-dot" style="background:${i<=acq?s.color:'var(--line)'}"></div>`).join('')}
+          </div>
+          <div class="ov-pct">${indicDone}/${indicTotal} indicateurs</div>
+          <div class="ov-prog-bar"><div class="ov-prog-fill" style="width:${pct}%;background:${s.color}"></div></div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- DÉTAIL ÉTAPE ACTIVE -->
+    <div class="step-detail" id="step-detail">
+      ${renderStepDetail()}
+    </div>
+  `;
+}
+
+function renderStepDetail(){
+  const s = STEPS.find(x=>x.key===activeStep);
+  if(!s) return '';
+  const st = STATE[s.key];
+
+  return `
+    <div class="sd-left">
+      <div class="sd-header">
+        <div class="sd-letter" style="color:${s.color}">${s.key}</div>
+        <div class="sd-nom" style="color:${s.color}">${s.nom}</div>
+        <div class="sd-desc">${s.desc}</div>
+      </div>
+
+      <!-- THERMOMÈTRE -->
+      <div class="thermo-wrap">
+        <span class="thermo-label">Niveau d'acquisition</span>
+        <div class="thermo-scale">
+          ${LEVELS.map(l=>`<div class="thermo-level ${l.v===st.acq?'on':''}" style="${l.v===st.acq?'background:'+s.color:''}" onclick="setAcq('${s.key}',${l.v})">
+            ${l.short}
+            <span class="thermo-lbl">${l.label}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <textarea class="notes-etape" id="notes-${s.key}" placeholder="Notes cliniques — observations pour cette étape..." rows="4">${st.notes||''}</textarea>
+
+      <div style="margin-top:12px;display:flex;justify-content:flex-end">
+        <button class="btn btn-gold btn-sm no-print" onclick="saveStep('${s.key}')">Enregistrer cette étape</button>
+      </div>
+    </div>
+
+    <div class="sd-right">
+      <div class="indic-section">
+        <span class="indic-title">Indicateurs d'acquisition observés</span>
+        <div class="indic-list">
+          ${s.indicateurs.map((ind,i)=>`
+            <div class="indic-item ${st.indic.includes(i)?'checked':''}" id="ind-${s.key}-${i}" onclick="toggleIndic('${s.key}',${i})">
+              <div class="indic-box">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="indic-text">${ind}</span>
+            </div>`).join('')}
+        </div>
+
+        <!-- NIVEAU SUGGÉRÉ -->
+        <div style="margin-top:16px;padding:12px 14px;background:rgba(168,135,58,.07);border:1px solid rgba(168,135,58,.2);border-radius:2px">
+          <div style="font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:5px">Niveau suggéré</div>
+          <div id="niveau-suggere" style="font-size:12px;color:var(--ink2);line-height:1.6">${getSuggestedLevel(s, st)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getSuggestedLevel(s, st){
+  const n = st.indic.length;
+  const total = s.indicateurs.length;
+  if(n===0) return 'Aucun indicateur coché — démarrer le travail sur cette étape.';
+  if(n===1) return `1 indicateur observé sur ${total} — étape en <strong>introduction</strong>.`;
+  if(n<=2) return `${n} indicateurs sur ${total} — <strong>exploration en cours</strong>.`;
+  if(n<=3) return `${n} indicateurs sur ${total} — <strong>pratique engagée</strong>.`;
+  if(n===4) return `4 indicateurs sur ${total} — étape en <strong>ancrage</strong>.`;
+  return `Tous les indicateurs validés — étape <strong>intégrée</strong>.`;
+}
+
+// INTERACTIONS
+function selectStep(key){
+  activeStep = key;
+  const detail = document.getElementById('step-detail');
+  if(detail) detail.innerHTML = renderStepDetail();
+  document.querySelectorAll('.ov-card').forEach(c=>{
+    const isActive = c.querySelector('.ov-letter')?.textContent===key;
+    c.classList.toggle('active', isActive);
+  });
+}
+
+function setAcq(key, val){
+  STATE[key].acq = val;
+  // Mettre à jour UI
+  document.querySelectorAll('.thermo-level').forEach((el,i)=>{
+    el.classList.toggle('on', i===val);
+    const s = STEPS.find(x=>x.key===key);
+    el.style.background = i===val ? s.color : '';
+    el.style.color = i===val ? '#fff' : '';
+  });
+  // Mettre à jour overview
+  updateOverviewCard(key);
+}
+
+function toggleIndic(key, i){
+  const st = STATE[key];
+  if(st.indic.includes(i)) st.indic = st.indic.filter(x=>x!==i);
+  else st.indic.push(i);
+  const el = document.getElementById(`ind-${key}-${i}`);
+  if(el) el.classList.toggle('checked', st.indic.includes(i));
+  // Mettre à jour le niveau suggéré
+  const s = STEPS.find(x=>x.key===key);
+  const niv = document.getElementById('niveau-suggere');
+  if(niv && s) niv.innerHTML = getSuggestedLevel(s, st);
+  updateOverviewCard(key);
+}
+
+function updateOverviewCard(key){
+  const st = STATE[key];
+  const s = STEPS.find(x=>x.key===key);
+  if(!s) return;
+  // Mettre à jour les points du thermomètre dans l'overview
+  const card = document.querySelector(`.ov-card .ov-letter[style*="${s.color}"]`)?.closest('.ov-card');
+  if(!card) return;
+  const dots = card.querySelectorAll('.ov-dot');
+  dots.forEach((d,i)=>{ d.style.background = i<st.acq ? s.color : 'var(--line)'; });
+  const pct = card.querySelector('.ov-pct');
+  if(pct) pct.textContent = `${st.indic.length}/${s.indicateurs.length} indicateurs`;
+}
+
+async function saveStep(key){
+  const st = STATE[key];
+  const notes = document.getElementById('notes-'+key)?.value||'';
+  st.notes = notes;
+  try{
+    await api('update_valeur_suivi',{patient_id:PATIENT_ID, etape:key, acquisition:st.acq, indicateurs_coches:st.indic, notes});
+    toast(`Étape ${key} enregistrée ✓`);
+  }catch(e){toast('Erreur','err')}
+}
+
+async function saveAll(){
+  for(const s of STEPS){
+    const notes = document.getElementById('notes-'+s.key)?.value||'';
+    STATE[s.key].notes = notes;
+    try{
+      await api('update_valeur_suivi',{patient_id:PATIENT_ID, etape:s.key, acquisition:STATE[s.key].acq, indicateurs_coches:STATE[s.key].indic, notes});
+    }catch(e){}
+  }
+  toast('Tout enregistré ✓');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg,type='info',dur=3500){
+  let stack=document.getElementById('_ts');
+  if(!stack){
+    stack=document.createElement('div');
+    stack.id='_ts';
+    stack.style.cssText='position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:7px';
+    document.body.appendChild(stack);
+  }
+  const t=document.createElement('div');
+  const borderColor=type==='ok'?'#2D7A4F':type==='err'?'#B5312A':'#A8873A';
+  const icon=type==='ok'?'✓':type==='err'?'✕':'·';
+  t.style.cssText=`background:#18130F;color:rgba(245,241,235,.9);padding:11px 17px;
+    border-radius:3px;border-left:3px solid ${borderColor};font-size:12px;
+    box-shadow:0 6px 24px rgba(0,0,0,.2);display:flex;gap:9px;align-items:center;
+    max-width:320px;font-family:'DM Sans',sans-serif;animation:_tIn .2s ease;`;
+  t.innerHTML=`<b style="flex-shrink:0">${icon}</b><span>${msg}</span>`;
+  if(!document.getElementById('_tStyle')){
+    const s=document.createElement('style');
+    s.id='_tStyle';
+    s.textContent='@keyframes _tIn{from{transform:translateX(14px);opacity:0}to{transform:none;opacity:1}}';
+    document.head.appendChild(s);
+  }
+  stack.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .25s';t.style.opacity='0';setTimeout(()=>t.remove(),250);},dur);
+}
+
+// ── NAVIGATION BREADCRUMB ─────────────────────────────────────
+function setBreadcrumb(items){
+  const el=document.getElementById('_bc');
+  if(!el)return;
+  el.innerHTML=items.map((item,i)=>{
+    if(i===items.length-1)
+      return `<span style="color:var(--ink,#1A1714);font-weight:500">${item.label}</span>`;
+    return `<a href="${item.href||'#'}" style="color:rgba(26,23,20,.4);text-decoration:none;transition:color .15s"
+      onmouseover="this.style.color='#1A1714'" onmouseout="this.style.color='rgba(26,23,20,.4)'">${item.label}</a>
+      <span style="color:rgba(26,23,20,.2);margin:0 2px">›</span>`;
+  }).join('');
+}</script>
+</body>
+</html>
